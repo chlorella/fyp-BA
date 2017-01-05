@@ -12,14 +12,14 @@ import android.widget.TextView;
 
 public class ListAdapter extends ArrayAdapter<String> {
     private final Activity context;
-    private final String[] pokemons;
+    private final String[] menu;
 
     public ListAdapter(Activity context, String[] pokemons) {
         super(context, R.layout.list_item, pokemons);
         // TODO Auto-generated constructor stub
 
         this.context = context;
-        this.pokemons = pokemons;
+        this.menu = pokemons;
     }
 
     public View getView(int position, View view, ViewGroup parent) {
@@ -29,7 +29,7 @@ public class ListAdapter extends ArrayAdapter<String> {
 
         TextView txtTitle = (TextView) rowView.findViewById(R.id.label);
 
-        txtTitle.setText(pokemons[position]);
+        txtTitle.setText(menu[position]);
 
         return rowView;
     }

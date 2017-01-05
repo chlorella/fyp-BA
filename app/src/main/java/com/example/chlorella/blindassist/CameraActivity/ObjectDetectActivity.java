@@ -77,7 +77,7 @@ public class ObjectDetectActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_camera_fullscreen);
+        setContentView(R.layout.activity_object_detect);
 
         textureView = (TextureView) findViewById(R.id.texture);
         assert textureView != null;
@@ -85,14 +85,15 @@ public class ObjectDetectActivity extends AppCompatActivity {
 
         textureView.setSurfaceTextureListener(textureListener);
 
-        flashLightButton = (Button) findViewById(R.id.light);
-        assert flashLightButton != null;
-        flashLightButton.setOnClickListener(new View.OnClickListener() {
+        takePictureButton = (Button) findViewById(R.id.capture);
+        assert takePictureButton != null;
+        takePictureButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                lightControl();
+                takePicture();
             }
         });
+
     }
     TextureView.SurfaceTextureListener textureListener = new TextureView.SurfaceTextureListener() {
         @Override
@@ -112,23 +113,6 @@ public class ObjectDetectActivity extends AppCompatActivity {
         public void onSurfaceTextureUpdated(SurfaceTexture surface) {
         }
     };
-
-    public void lightControl() {
-        try {
-            if (!isLightOn) {
-                captureRequestBuilder.set(CaptureRequest.FLASH_MODE, CameraMetadata.FLASH_MODE_TORCH);
-                cameraCaptureSessions.setRepeatingRequest(captureRequestBuilder.build(), null, null);
-                isLightOn = true;
-            }else {
-                captureRequestBuilder.set(CaptureRequest.FLASH_MODE, CameraMetadata.FLASH_MODE_OFF);
-                cameraCaptureSessions.setRepeatingRequest(captureRequestBuilder.build(), null, null);
-                isLightOn = false;
-            }
-        }
-        catch (CameraAccessException e) {
-            e.printStackTrace();
-        }
-    }
 
     private final CameraDevice.StateCallback stateCallback = new CameraDevice.StateCallback() {
         @Override

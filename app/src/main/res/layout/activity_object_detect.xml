@@ -32,10 +32,10 @@
             tools:ignore="UselessParent">
 
             <Button
-                android:text="Light"
+                android:text="Capture"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:id="@+id/light"
+                android:id="@+id/capture"
                 android:layout_weight="1" />
         </LinearLayout>
 

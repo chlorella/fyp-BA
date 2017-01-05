@@ -77,7 +77,7 @@ public class ColorDetectActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_camera_fullscreen);
+        setContentView(R.layout.activity_color_detect);
 
         textureView = (TextureView) findViewById(R.id.texture);
         assert textureView != null;
@@ -85,12 +85,12 @@ public class ColorDetectActivity extends AppCompatActivity {
 
         textureView.setSurfaceTextureListener(textureListener);
 
-        flashLightButton = (Button) findViewById(R.id.light);
-        assert flashLightButton != null;
-        flashLightButton.setOnClickListener(new View.OnClickListener() {
+        takePictureButton = (Button) findViewById(R.id.c_capture);
+        assert takePictureButton != null;
+        takePictureButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                lightControl();
+                takePicture();
             }
         });
     }
