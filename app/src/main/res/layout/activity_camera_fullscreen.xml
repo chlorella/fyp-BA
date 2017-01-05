@@ -1,4 +1,4 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -19,21 +19,28 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fitsSystemWindows="true">
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true">
 
         <LinearLayout
-            android:id="@+id/fullscreen_content_controls"
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center_horizontal"
-            android:background="@color/black_overlay"
-            android:orientation="horizontal"
-            tools:ignore="UselessParent">
+            android:layout_height="wrap_content">
+
+            <SeekBar
+                style="@style/Widget.AppCompat.SeekBar.Discrete"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:max="10"
+                android:progress="3"
+                android:id="@+id/zoom_seek"
+                android:layout_weight="0.57" />
 
             <Button
                 android:text="Light"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/light"
                 android:layout_weight="1" />
@@ -41,4 +48,4 @@
 
     </FrameLayout>
 
-</FrameLayout>
+</RelativeLayout>

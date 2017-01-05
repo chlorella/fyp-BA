@@ -53,7 +53,6 @@ import java.util.List;
 public class ColorDetectActivity extends AppCompatActivity {
     private static final String TAG = "ColorDetectActivity";
     private Button takePictureButton;
-    private Button flashLightButton;
     private TextureView textureView;
     private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
     static {
@@ -70,20 +69,23 @@ public class ColorDetectActivity extends AppCompatActivity {
     private ImageReader imageReader;
     private File file;
     private static final int REQUEST_CAMERA_PERMISSION = 200;
-    private boolean mFlashSupported;
     private boolean isLightOn;
     private Handler mBackgroundHandler;
     private HandlerThread mBackgroundThread;
+
+    protected View mPointerRing;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_color_detect);
 
-        textureView = (TextureView) findViewById(R.id.texture);
+        textureView = (TextureView) findViewById(R.id.c_texture);
         assert textureView != null;
         assert textureView != null;
 
         textureView.setSurfaceTextureListener(textureListener);
+
+        mPointerRing = findViewById(R.id.activity_color_picker_pointer_ring);
 
         takePictureButton = (Button) findViewById(R.id.c_capture);
         assert takePictureButton != null;
@@ -323,6 +325,7 @@ public class ColorDetectActivity extends AppCompatActivity {
             Log.e(TAG, "updatePreview error, return");
         }
         captureRequestBuilder.set(CaptureRequest.CONTROL_MODE, CameraMetadata.CONTROL_MODE_AUTO);
+
         try {
             cameraCaptureSessions.setRepeatingRequest(captureRequestBuilder.build(), null, mBackgroundHandler);
         } catch (CameraAccessException e) {

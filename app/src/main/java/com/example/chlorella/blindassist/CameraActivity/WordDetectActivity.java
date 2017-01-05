@@ -50,10 +50,9 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-public class ObjectDetectActivity extends AppCompatActivity {
-    private static final String TAG = "ObjectDetectActivity";
+public class WordDetectActivity extends AppCompatActivity {
+    private static final String TAG = "WordDetectActivity";
     private Button takePictureButton;
-    private Button flashLightButton;
     private TextureView textureView;
     private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
     static {
@@ -76,7 +75,7 @@ public class ObjectDetectActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_object_detect);
+        setContentView(R.layout.activity_word_detect);
 
         textureView = (TextureView) findViewById(R.id.o_texture);
         assert textureView != null;
@@ -136,7 +135,7 @@ public class ObjectDetectActivity extends AppCompatActivity {
         @Override
         public void onCaptureCompleted(CameraCaptureSession session, CaptureRequest request, TotalCaptureResult result) {
             super.onCaptureCompleted(session, request, result);
-            Toast.makeText(ObjectDetectActivity.this, "Saved:" + file, Toast.LENGTH_SHORT).show();
+            Toast.makeText(WordDetectActivity.this, "Saved:" + file, Toast.LENGTH_SHORT).show();
             createCameraPreview();
         }
     };
@@ -227,7 +226,7 @@ public class ObjectDetectActivity extends AppCompatActivity {
                 @Override
                 public void onCaptureCompleted(CameraCaptureSession session, CaptureRequest request, TotalCaptureResult result) {
                     super.onCaptureCompleted(session, request, result);
-                    Toast.makeText(ObjectDetectActivity.this, "Saved:" + file, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(WordDetectActivity.this, "Saved:" + file, Toast.LENGTH_SHORT).show();
                     createCameraPreview();
                 }
             };
@@ -270,7 +269,7 @@ public class ObjectDetectActivity extends AppCompatActivity {
                 }
                 @Override
                 public void onConfigureFailed(@NonNull CameraCaptureSession cameraCaptureSession) {
-                    Toast.makeText(ObjectDetectActivity.this, "Configuration change", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(WordDetectActivity.this, "Configuration change", Toast.LENGTH_SHORT).show();
                 }
             }, null);
         } catch (CameraAccessException e) {
@@ -290,7 +289,7 @@ public class ObjectDetectActivity extends AppCompatActivity {
             imageDimension = map.getOutputSizes(SurfaceTexture.class)[0];
             // Add permission for camera and let user grant the permission
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(ObjectDetectActivity.this, new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CAMERA_PERMISSION);
+                ActivityCompat.requestPermissions(WordDetectActivity.this, new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CAMERA_PERMISSION);
                 return;
             }
             manager.openCamera(cameraId, stateCallback, null);
@@ -328,7 +327,7 @@ public class ObjectDetectActivity extends AppCompatActivity {
         if (requestCode == REQUEST_CAMERA_PERMISSION) {
             if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
                 // close the app
-                Toast.makeText(ObjectDetectActivity.this, "Sorry!!!, you can't use this app without granting permission", Toast.LENGTH_LONG).show();
+                Toast.makeText(WordDetectActivity.this, "Sorry!!!, you can't use this app without granting permission", Toast.LENGTH_LONG).show();
                 finish();
             }
         }

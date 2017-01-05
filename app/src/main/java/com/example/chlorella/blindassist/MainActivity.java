@@ -18,6 +18,7 @@ public class MainActivity extends AppCompatActivity {
             "Tool",
             "Color Detector",
             "Object Detector",
+            "Word Detector",
             "Setting",
     };
     ListView listView;
@@ -49,6 +50,10 @@ public class MainActivity extends AppCompatActivity {
                         startActivity(nextActivity);
                         break;
                     case 3:
+                        nextActivity = new Intent(MainActivity.this,ObjectDetectActivity.class);
+                        startActivity(nextActivity);
+                        break;
+                    case 4:
                         nextActivity = new Intent(MainActivity.this,SettingsActivity.class);
                         startActivity(nextActivity);
                 }

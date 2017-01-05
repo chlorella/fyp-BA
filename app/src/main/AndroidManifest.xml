@@ -26,6 +26,18 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"></activity>
         <activity
+            android:name=".CameraActivity.ObjectDetectActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/app_name"></activity>
+        <activity
+            android:name=".CameraActivity.ColorDetectActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/app_name"></activity>
+        <activity
+            android:name=".CameraActivity.WordDetectActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/app_name"></activity>
+        <activity
             android:name=".Setting.SettingsActivity"
             android:label="@string/title_activity_settings"></activity>
     </application>

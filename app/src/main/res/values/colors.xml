@@ -4,5 +4,8 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
 
-    <color name="black_overlay">#66000000</color>
+    <color name="black_overlay">#660000</color>
+
+    <color name="activity_color_picker_pointer_ring">#FFFFFF</color>
+    <color name="pointer_color">#e3e3e3</color>
 </resources>
