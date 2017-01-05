@@ -51,7 +51,7 @@ import java.util.Date;
 import java.util.List;
 
 public class ObjectDetectActivity extends AppCompatActivity {
-    private static final String TAG = "SmallToolActivity";
+    private static final String TAG = "ObjectDetectActivity";
     private Button takePictureButton;
     private Button flashLightButton;
     private TextureView textureView;
@@ -71,7 +71,6 @@ public class ObjectDetectActivity extends AppCompatActivity {
     private File file;
     private static final int REQUEST_CAMERA_PERMISSION = 200;
     private boolean mFlashSupported;
-    private boolean isLightOn;
     private Handler mBackgroundHandler;
     private HandlerThread mBackgroundThread;
     @Override

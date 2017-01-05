@@ -51,7 +51,7 @@ import java.util.Date;
 import java.util.List;
 
 public class ColorDetectActivity extends AppCompatActivity {
-    private static final String TAG = "SmallToolActivity";
+    private static final String TAG = "ColorDetectActivity";
     private Button takePictureButton;
     private Button flashLightButton;
     private TextureView textureView;
