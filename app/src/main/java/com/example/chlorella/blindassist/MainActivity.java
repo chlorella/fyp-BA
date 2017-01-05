@@ -7,12 +7,17 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.example.chlorella.blindassist.CameraActivity.ColorDetectActivity;
+import com.example.chlorella.blindassist.CameraActivity.ObjectDetectActivity;
+import com.example.chlorella.blindassist.CameraActivity.SmallToolActivity;
+import com.example.chlorella.blindassist.Setting.SettingsActivity;
+
 public class MainActivity extends AppCompatActivity {
     // Remenber modify to string resource
     private String[] classNames = {
-            "item1",
-            "item2",
-            "item3",
+            "Tool",
+            "Color Detector",
+            "Object Detector",
             "Setting",
     };
     ListView listView;
@@ -29,9 +34,18 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Intent nextActivity;
                 switch (i){
                     case 0:
-                        Intent nextActivity = new Intent(MainActivity.this,AndroidCameraApi.class);
+                        nextActivity = new Intent(MainActivity.this,SmallToolActivity.class);
+                        startActivity(nextActivity);
+                        break;
+                    case 1:
+                        nextActivity = new Intent(MainActivity.this,ColorDetectActivity.class);
+                        startActivity(nextActivity);
+                        break;
+                    case 2:
+                        nextActivity = new Intent(MainActivity.this,ObjectDetectActivity.class);
                         startActivity(nextActivity);
                         break;
                     case 3:

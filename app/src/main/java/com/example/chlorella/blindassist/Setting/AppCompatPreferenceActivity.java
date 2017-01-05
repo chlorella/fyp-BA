@@ -1,4 +1,4 @@
-package com.example.chlorella.blindassist;
+package com.example.chlorella.blindassist.Setting;
 
 import android.content.res.Configuration;
 import android.os.Bundle;

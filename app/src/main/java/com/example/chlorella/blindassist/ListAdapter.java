@@ -32,6 +32,5 @@ public class ListAdapter extends ArrayAdapter<String> {
         txtTitle.setText(pokemons[position]);
 
         return rowView;
-
     }
 }
