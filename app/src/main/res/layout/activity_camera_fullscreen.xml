@@ -30,22 +30,26 @@
             android:layout_height="wrap_content">
 
             <SeekBar
-                style="@style/Widget.AppCompat.SeekBar.Discrete"
+                style="@android:style/Widget.Material.Light.SeekBar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:max="10"
-                android:progress="3"
+                android:max="100"
+                android:progress="30"
                 android:id="@+id/zoom_seek"
-                android:layout_weight="0.57" />
+                android:layout_weight="0.57"
+                android:textColor="@android:color/black" />
 
             <Button
                 android:text="Light"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/light"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:textColor="@android:color/black" />
         </LinearLayout>
 
     </FrameLayout>
+
+
 
 </RelativeLayout>

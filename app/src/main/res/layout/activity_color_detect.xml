@@ -10,6 +10,17 @@
         android:layout_height="wrap_content"
         android:id="@+id/c_texture" />
 
+    <TextView
+        android:text="Color #FFFFFF"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:id="@+id/color_label"
+        android:layout_alignParentEnd="true"
+        android:textColor="@android:color/white"
+        android:textSize="30sp"
+        android:textAlignment="center" />
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
