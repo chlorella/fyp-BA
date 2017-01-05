@@ -19,7 +19,8 @@
         android:layout_alignParentEnd="true"
         android:textColor="@android:color/white"
         android:textSize="30sp"
-        android:textAlignment="center" />
+        android:textAlignment="center"
+        android:background="@android:color/background_dark" />
 
     <FrameLayout
         android:layout_width="match_parent"

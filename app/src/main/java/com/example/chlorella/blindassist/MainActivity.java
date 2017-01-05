@@ -10,6 +10,7 @@ import android.widget.ListView;
 import com.example.chlorella.blindassist.CameraActivity.ColorDetectActivity;
 import com.example.chlorella.blindassist.CameraActivity.ObjectDetectActivity;
 import com.example.chlorella.blindassist.CameraActivity.SmallToolActivity;
+import com.example.chlorella.blindassist.CameraActivity.WordDetectActivity;
 import com.example.chlorella.blindassist.Setting.SettingsActivity;
 
 public class MainActivity extends AppCompatActivity {
@@ -50,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
                         startActivity(nextActivity);
                         break;
                     case 3:
-                        nextActivity = new Intent(MainActivity.this,ObjectDetectActivity.class);
+                        nextActivity = new Intent(MainActivity.this,WordDetectActivity.class);
                         startActivity(nextActivity);
                         break;
                     case 4:
