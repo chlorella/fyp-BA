@@ -30,10 +30,10 @@ import android.util.SparseIntArray;
 import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
-import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.example.chlorella.blindassist.R;
 
@@ -42,7 +42,7 @@ import java.util.Arrays;
 
 public class SmallToolActivity extends AppCompatActivity {
     private static final String TAG = "SmallToolActivity";
-    private Button flashLightButton;
+    private ToggleButton flashLightButton;
     private SeekBar zoomSeek;
     private TextView zoom;
     private TextureView textureView;
@@ -62,7 +62,6 @@ public class SmallToolActivity extends AppCompatActivity {
     private File file;
     private static final int REQUEST_CAMERA_PERMISSION = 200;
     private boolean mFlashSupported;
-    private boolean isLightOn = true;
     private Handler mBackgroundHandler;
     private HandlerThread mBackgroundThread;
     @Override
@@ -78,7 +77,7 @@ public class SmallToolActivity extends AppCompatActivity {
         zoom = (TextView) findViewById(R.id.zoom_text);
         assert textureView != null;
 
-        flashLightButton = (Button) findViewById(R.id.light);
+        flashLightButton = (ToggleButton) findViewById(R.id.light);
         assert flashLightButton != null;
         flashLightButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -128,14 +127,13 @@ public class SmallToolActivity extends AppCompatActivity {
 
     public void lightControl() {
         try {
-            if (!isLightOn) {
+            if (flashLightButton.isChecked()) {
                 captureRequestBuilder.set(CaptureRequest.FLASH_MODE, CameraMetadata.FLASH_MODE_TORCH);
                 cameraCaptureSessions.setRepeatingRequest(captureRequestBuilder.build(), null, null);
-                isLightOn = true;
+
             }else {
                 captureRequestBuilder.set(CaptureRequest.FLASH_MODE, CameraMetadata.FLASH_MODE_OFF);
                 cameraCaptureSessions.setRepeatingRequest(captureRequestBuilder.build(), null, null);
-                isLightOn = false;
             }
         }
         catch (CameraAccessException e) {

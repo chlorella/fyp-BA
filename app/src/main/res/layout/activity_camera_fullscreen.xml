@@ -49,15 +49,17 @@
                 android:progress="0"
                 android:id="@+id/zoom_seek"
                 android:layout_weight="0.57"
-                android:textColor="@android:color/background_light" />
+                android:textColor="@android:color/background_light"
+                android:contentDescription="zoom" />
 
-            <Button
-                android:text="Light"
+            <ToggleButton
+                android:text="Light button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/light"
-                android:layout_weight="1"
-                android:textColor="@android:color/black" />
+                android:contentDescription="Flash light control"
+                android:checked="true" />
+
         </LinearLayout>
 
     </FrameLayout>
