@@ -69,7 +69,6 @@ public class ColorDetectActivity extends AppCompatActivity {
     private ImageReader imageReader;
     private File file;
     private static final int REQUEST_CAMERA_PERMISSION = 200;
-    private boolean isLightOn;
     private Handler mBackgroundHandler;
     private HandlerThread mBackgroundThread;
 
@@ -114,23 +113,6 @@ public class ColorDetectActivity extends AppCompatActivity {
         public void onSurfaceTextureUpdated(SurfaceTexture surface) {
         }
     };
-
-    public void lightControl() {
-        try {
-            if (!isLightOn) {
-                captureRequestBuilder.set(CaptureRequest.FLASH_MODE, CameraMetadata.FLASH_MODE_TORCH);
-                cameraCaptureSessions.setRepeatingRequest(captureRequestBuilder.build(), null, null);
-                isLightOn = true;
-            }else {
-                captureRequestBuilder.set(CaptureRequest.FLASH_MODE, CameraMetadata.FLASH_MODE_OFF);
-                cameraCaptureSessions.setRepeatingRequest(captureRequestBuilder.build(), null, null);
-                isLightOn = false;
-            }
-        }
-        catch (CameraAccessException e) {
-            e.printStackTrace();
-        }
-    }
 
     private final CameraDevice.StateCallback stateCallback = new CameraDevice.StateCallback() {
         @Override
@@ -241,6 +223,7 @@ public class ColorDetectActivity extends AppCompatActivity {
                     }
                 }
             };
+
             reader.setOnImageAvailableListener(readerListener, mBackgroundHandler);
             final CameraCaptureSession.CaptureCallback captureListener = new CameraCaptureSession.CaptureCallback() {
                 @Override
@@ -332,6 +315,47 @@ public class ColorDetectActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
+    protected void updateColorRing(){
+        final int midX = textureView.getWidth()/2;
+        final int midY = textureView.getHeight()/2;
+
+        int[] mSelectedColor = new int[3];
+
+        // Reset the selected color.
+        mSelectedColor[0] = 0;
+        mSelectedColor[1] = 0;
+        mSelectedColor[2] = 0;
+
+
+    }
+
+    protected void addColorFromYUV420(byte[] data, int[] averageColor, int count, int x, int y, int width, int height) {
+        // The code converting YUV420 to rgb format is highly inspired from this post http://stackoverflow.com/a/10125048
+        final int size = width * height;
+        final int Y = data[y * width + x] & 0xff;
+        final int xby2 = x / 2;
+        final int yby2 = y / 2;
+
+        final float V = (float) (data[size + 2 * xby2 + yby2 * width] & 0xff) - 128.0f;
+        final float U = (float) (data[size + 2 * xby2 + 1 + yby2 * width] & 0xff) - 128.0f;
+
+        // Do the YUV -> RGB conversion
+        float Yf = 1.164f * ((float) Y) - 16.0f;
+        int red = (int) (Yf + 1.596f * V);
+        int green = (int) (Yf - 0.813f * V - 0.391f * U);
+        int blue = (int) (Yf + 2.018f * U);
+
+        // Clip rgb values to [0-255]
+        red = red < 0 ? 0 : red > 255 ? 255 : red;
+        green = green < 0 ? 0 : green > 255 ? 255 : green;
+        blue = blue < 0 ? 0 : blue > 255 ? 255 : blue;
+
+        averageColor[0] += (red - averageColor[0]) / count;
+        averageColor[1] += (green - averageColor[1]) / count;
+        averageColor[2] += (blue - averageColor[2]) / count;
+    }
+
 
     private void closeCamera() {
         if (null != cameraDevice) {
