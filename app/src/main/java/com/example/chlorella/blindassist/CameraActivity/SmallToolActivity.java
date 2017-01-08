@@ -31,6 +31,8 @@ import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.chlorella.blindassist.R;
@@ -41,6 +43,8 @@ import java.util.Arrays;
 public class SmallToolActivity extends AppCompatActivity {
     private static final String TAG = "SmallToolActivity";
     private Button flashLightButton;
+    private SeekBar zoomSeek;
+    private TextView zoom;
     private TextureView textureView;
     private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
     static {
@@ -68,9 +72,11 @@ public class SmallToolActivity extends AppCompatActivity {
 
         textureView = (TextureView) findViewById(R.id.texture);
         assert textureView != null;
-        assert textureView != null;
 
         textureView.setSurfaceTextureListener(textureListener);
+
+        zoom = (TextView) findViewById(R.id.zoom_text);
+        assert textureView != null;
 
         flashLightButton = (Button) findViewById(R.id.light);
         assert flashLightButton != null;
@@ -80,7 +86,27 @@ public class SmallToolActivity extends AppCompatActivity {
                 lightControl();
             }
         });
+
+        zoomSeek = (SeekBar) findViewById(R.id.zoom_seek);
+        assert  zoomSeek != null;
+        zoomSeek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                zoom.setText("Zoom:" + i + "%");
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
     }
+
     TextureView.SurfaceTextureListener textureListener = new TextureView.SurfaceTextureListener() {
         @Override
         public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {

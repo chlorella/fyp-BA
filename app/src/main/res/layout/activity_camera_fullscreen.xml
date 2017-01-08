@@ -29,15 +29,27 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/frameLayout"
+                android:layout_gravity="center_horizontal"
+                android:id="@+id/zoom_text"
+                android:textSize="30sp"
+                android:background="@android:color/black"
+                android:textColor="@android:color/background_light"
+                android:textAlignment="center"
+                android:text="Zoom:0%" />
+
             <SeekBar
                 style="@android:style/Widget.Material.Light.SeekBar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:max="100"
-                android:progress="30"
+                android:progress="0"
                 android:id="@+id/zoom_seek"
                 android:layout_weight="0.57"
-                android:textColor="@android:color/black" />
+                android:textColor="@android:color/background_light" />
 
             <Button
                 android:text="Light"
@@ -49,7 +61,6 @@
         </LinearLayout>
 
     </FrameLayout>
-
 
 
 </RelativeLayout>

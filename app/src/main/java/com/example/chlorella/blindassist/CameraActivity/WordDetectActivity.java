@@ -6,6 +6,7 @@ package com.example.chlorella.blindassist.CameraActivity;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.ImageFormat;
 import android.graphics.SurfaceTexture;
@@ -53,6 +54,7 @@ import java.util.List;
 public class WordDetectActivity extends AppCompatActivity {
     private static final String TAG = "WordDetectActivity";
     private Button takePictureButton;
+    private Button albumtButton;
     private TextureView textureView;
     private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
     static {
@@ -89,6 +91,18 @@ public class WordDetectActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 takePicture();
+            }
+        });
+
+        albumtButton = (Button) findViewById(R.id.o_album);
+        assert albumtButton != null;
+        albumtButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent getImage = new Intent(Intent.ACTION_GET_CONTENT);
+                getImage.addCategory(Intent.CATEGORY_OPENABLE);
+                getImage.setType("image/jpeg");
+                WordDetectActivity.this.startActivity(getImage);
             }
         });
 
