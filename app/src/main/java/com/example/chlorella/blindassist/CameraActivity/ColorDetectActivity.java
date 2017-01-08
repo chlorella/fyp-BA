@@ -7,7 +7,9 @@ package com.example.chlorella.blindassist.CameraActivity;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.graphics.ImageFormat;
+import android.graphics.PorterDuff;
 import android.graphics.SurfaceTexture;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCaptureSession;
@@ -327,7 +329,16 @@ public class ColorDetectActivity extends AppCompatActivity {
         mSelectedColor[1] = 0;
         mSelectedColor[2] = 0;
 
-
+        // Compute the average selected color.
+        int POINTER_RADIUS = 5;
+        for (int i = 0; i <= POINTER_RADIUS; i++) {
+            for (int j = 0; j <= POINTER_RADIUS; j++) {
+                //addColorFromYUV420(data, mSelectedColor, (i * POINTER_RADIUS + j + 1),
+                        //(midX - POINTER_RADIUS) + i, (midY - POINTER_RADIUS) + j,
+                        //textureView.getWidth(), textureView.getHeight());
+            }
+        }
+        mPointerRing.getBackground().setColorFilter(Color.rgb(mSelectedColor[0], mSelectedColor[1], mSelectedColor[2]), PorterDuff.Mode.SRC_ATOP);
     }
 
     protected void addColorFromYUV420(byte[] data, int[] averageColor, int count, int x, int y, int width, int height) {
