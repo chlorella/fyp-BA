@@ -203,6 +203,7 @@ public class ObjectDetectActivity extends AppCompatActivity {
             // Save files in dir
             SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
             String currentDateAndTime = sdf.format(new Date());
+            //Todo: File naming
             final File file = new File(Environment.getExternalStoragePublicDirectory(
                     Environment.DIRECTORY_PICTURES) +"/MyCameraApp/pic_" +  currentDateAndTime +".jpg");
             ImageReader.OnImageAvailableListener readerListener = new ImageReader.OnImageAvailableListener() {
