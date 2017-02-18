@@ -96,6 +96,7 @@ public class WordDetectActivity extends AppCompatActivity {
 
         albumtButton = (Button) findViewById(R.id.o_album);
         assert albumtButton != null;
+        //Todo :
         albumtButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
