@@ -15,21 +15,16 @@ import com.example.chlorella.blindassist.Setting.SettingsActivity;
 
 public class MainActivity extends AppCompatActivity {
     // Remenber modify to string resource
-    private String[] classNames = {
-            "Tool",
-            "Color Detector",
-            "Object Detector",
-            "Word Detector",
-            "Setting",
-    };
+    private String[] myClassNames;
     ListView listView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        myClassNames = getResources().getStringArray(R.array.classNames);
+        // Assign the adapter to this ListActivity
         listView = (ListView) findViewById(R.id.listView);
-        ListAdapter adapter = new ListAdapter(this, classNames);
+        ListAdapter adapter = new ListAdapter(this, myClassNames);
         listView.setAdapter(adapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){

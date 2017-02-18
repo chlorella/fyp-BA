@@ -4,7 +4,6 @@
     <string name="request_permission">This sample needs camera permission.</string>
     <string name="camera_error">This device doesn\'t support Camera2 API.</string>
     <string name="title_activity_settings">Settings</string>
-
     <!-- Strings related to Settings -->
 
     <!-- Example General settings -->
@@ -76,4 +75,14 @@
     <string name="pref_ringtone_silent">Silent</string>
 
     <string name="pref_title_vibrate">Vibrate</string>
+    <!--Setting-->
+
+    <string name="subscription_key">29efd8c1788b4df3b2579ceb416001cc</string>
+    <string-array name="classNames">
+        <item>Small tool</item>
+        <item>Color detector</item>
+        <item>Object detector</item>
+        <item>OCR</item>
+        <item>Setting</item>
+    </string-array>
 </resources>
