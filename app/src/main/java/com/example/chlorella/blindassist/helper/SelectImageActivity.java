@@ -42,7 +42,7 @@ import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.TextView;
 
-import com.microsoft.projectoxford.visionsample.R;
+import com.example.chlorella.blindassist.R;
 
 import java.io.File;
 import java.io.IOException;

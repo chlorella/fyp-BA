@@ -8,4 +8,8 @@
 
     <color name="activity_color_picker_pointer_ring">#FFFFFF</color>
     <color name="pointer_color">#e3e3e3</color>
+
+    <color name="button_pressed_background">#66B2FF</color>
+    <color name="button_enabled_background">#3399FF</color>
+    <color name="button_disabled_background">#C0C0C0</color>
 </resources>
