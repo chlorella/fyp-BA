@@ -40,7 +40,7 @@ import com.example.chlorella.blindassist.R;
 import java.io.File;
 import java.util.Arrays;
 
-public class SmallToolActivity extends AppCompatActivity {
+public class  SmallToolActivity extends AppCompatActivity {
     private static final String TAG = "SmallToolActivity";
     private ToggleButton flashLightButton;
     private SeekBar zoomSeek;

@@ -32,6 +32,7 @@
 //
 package com.example.chlorella.blindassist;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -45,14 +46,15 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
+import com.example.chlorella.blindassist.helper.ImageHelper;
 import com.google.gson.Gson;
 import com.microsoft.projectoxford.vision.VisionServiceClient;
 import com.microsoft.projectoxford.vision.VisionServiceRestClient;
 import com.microsoft.projectoxford.vision.contract.AnalysisResult;
 import com.microsoft.projectoxford.vision.contract.Caption;
 import com.microsoft.projectoxford.vision.rest.VisionServiceException;
-import com.example.chlorella.blindassist.helper.ImageHelper;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -163,7 +165,7 @@ public class DescribeActivity extends ActionBarActivity {
         }
     }
 
-
+    //process
     private String process() throws VisionServiceException, IOException {
         Gson gson = new Gson();
 
@@ -208,17 +210,27 @@ public class DescribeActivity extends ActionBarActivity {
                 mEditText.setText("Error: " + e.getMessage());
                 this.e = null;
             } else {
+                //gson
                 Gson gson = new Gson();
                 AnalysisResult result = gson.fromJson(data, AnalysisResult.class);
 
                 mEditText.append("Image format: " + result.metadata.format + "\n");
                 mEditText.append("Image width: " + result.metadata.width + ", height:" + result.metadata.height + "\n");
                 mEditText.append("\n");
+                CharSequence text = "";
 
+                //result.description.captions = .description text
                 for (Caption caption: result.description.captions) {
                     mEditText.append("Caption: " + caption.text + ", confidence: " + caption.confidence + "\n");
+                    text = text + caption.text + "\n";
                 }
                 mEditText.append("\n");
+
+                Context context = getApplicationContext();
+                int duration = Toast.LENGTH_SHORT;
+
+                Toast toast = Toast.makeText(context, text, duration);
+                toast.show();
 
                 for (String tag: result.description.tags) {
                     mEditText.append("Tag: " + tag + "\n");
