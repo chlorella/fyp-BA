@@ -166,6 +166,7 @@ public class DescribeActivity extends ActionBarActivity {
     }
 
     //process
+    //different
     private String process() throws VisionServiceException, IOException {
         Gson gson = new Gson();
 

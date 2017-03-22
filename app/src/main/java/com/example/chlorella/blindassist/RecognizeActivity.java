@@ -95,6 +95,7 @@ public class RecognizeActivity extends ActionBarActivity {
     }
 
     // Called when image selection is done.
+    // Same
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.d("AnalyzeActivity", "onActivityResult");
@@ -163,6 +164,7 @@ public class RecognizeActivity extends ActionBarActivity {
         return result;
     }
 
+    //do request
     private class doRequest extends AsyncTask<String, String, String> {
         // Store error message
         private Exception e = null;
