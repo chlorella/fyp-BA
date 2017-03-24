@@ -47,6 +47,11 @@
             android:name=".Setting.SettingsActivity"
             android:label="@string/title_activity_settings"></activity>
         <activity
+            android:name=".CameraActivity.testCameraKit"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|screenSize"
+            android:label="kit"></activity>
+        <activity
             android:name=".DescribeActivity"
             android:label="@string/title_activity_describe"
             android:parentActivityName=".MainActivity" >

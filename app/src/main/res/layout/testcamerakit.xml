@@ -6,31 +6,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-    <com.flurgle.camerakit.CameraView xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/camera"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:adjustViewBounds="true"
-        app:ckCropOutput="false"
-        app:ckFacing="back"
-        app:ckFlash="auto"
-        app:ckFocus="tap"
-        app:ckJpegQuality="100"
-        app:ckMethod="standard"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-        <com.flurgle.camerakit.demo.FocusMarkerLayout
-            android:id="@+id/focusMarker"
-            android:layout_width="wrap_content"
+        <com.flurgle.camerakit.CameraView
+            android:id="@+id/camera"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/camera"
-            android:layout_alignLeft="@+id/camera"
-            android:layout_alignRight="@+id/camera"
-            android:layout_alignTop="@+id/camera" />
-
+            android:adjustViewBounds="true" />
     </RelativeLayout>
 
 </LinearLayout>
