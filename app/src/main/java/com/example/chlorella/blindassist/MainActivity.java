@@ -8,7 +8,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.example.chlorella.blindassist.CameraActivity.ColorDetectActivity;
-import com.example.chlorella.blindassist.CameraActivity.SmallToolActivity;
+import com.example.chlorella.blindassist.CameraActivity.testCameraKit;
 import com.example.chlorella.blindassist.Setting.SettingsActivity;
 
 public class MainActivity extends AppCompatActivity {
@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
                 Intent nextActivity;
                 switch (i){
                     case 0:
-                        nextActivity = new Intent(MainActivity.this,SmallToolActivity.class);
+                        nextActivity = new Intent(MainActivity.this,testCameraKit.class);
                         startActivity(nextActivity);
                         break;
                     case 1:

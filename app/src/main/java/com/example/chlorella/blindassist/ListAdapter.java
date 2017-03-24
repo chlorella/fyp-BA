@@ -14,12 +14,12 @@ public class ListAdapter extends ArrayAdapter<String> {
     private final Activity context;
     private final String[] menu;
 
-    public ListAdapter(Activity context, String[] pokemons) {
-        super(context, R.layout.list_item, pokemons);
+    public ListAdapter(Activity context, String[] item) {
+        super(context, R.layout.list_item, item);
         // TODO Auto-generated constructor stub
 
         this.context = context;
-        this.menu = pokemons;
+        this.menu = item;
     }
 
     public View getView(int position, View view, ViewGroup parent) {
