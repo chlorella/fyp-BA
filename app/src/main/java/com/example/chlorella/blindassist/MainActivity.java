@@ -11,49 +11,55 @@ import com.example.chlorella.blindassist.CameraActivity.ColorDetectActivity;
 import com.example.chlorella.blindassist.CameraActivity.testCameraKit;
 import com.example.chlorella.blindassist.Setting.SettingsActivity;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class MainActivity extends AppCompatActivity {
+    @BindView(R.id.listView)
+    ListView listView;
+
     // Remenber modify to string resource
     private String[] myClassNames;
-    ListView listView;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
         myClassNames = getResources().getStringArray(R.array.classNames);
         // Assign the adapter to this ListActivity
         listView = (ListView) findViewById(R.id.listView);
         ListAdapter adapter = new ListAdapter(this, myClassNames);
         listView.setAdapter(adapter);
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Intent nextActivity;
-                switch (i){
+                switch (i) {
                     case 0:
-                        nextActivity = new Intent(MainActivity.this,testCameraKit.class);
+                        nextActivity = new Intent(MainActivity.this, testCameraKit.class);
                         startActivity(nextActivity);
                         break;
                     case 1:
-                        nextActivity = new Intent(MainActivity.this,ColorDetectActivity.class);
+                        nextActivity = new Intent(MainActivity.this, ColorDetectActivity.class);
                         startActivity(nextActivity);
                         break;
                     case 2:
-                        nextActivity = new Intent(MainActivity.this,DescribeActivity.class);
+                        nextActivity = new Intent(MainActivity.this, DescribeActivity.class);
                         startActivity(nextActivity);
                         break;
                     case 3:
-                        nextActivity = new Intent(MainActivity.this,RecognizeActivity.class);
+                        nextActivity = new Intent(MainActivity.this, RecognizeActivity.class);
                         startActivity(nextActivity);
                         break;
                     case 4:
-                        nextActivity = new Intent(MainActivity.this,SettingsActivity.class);
+                        nextActivity = new Intent(MainActivity.this, SettingsActivity.class);
                         startActivity(nextActivity);
                 }
             }
         });
     }
-
-
 }

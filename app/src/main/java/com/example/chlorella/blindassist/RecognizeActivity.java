@@ -153,14 +153,6 @@ public class RecognizeActivity extends ActionBarActivity {
         String result = gson.toJson(ocr);
         Log.d("result", result);
 
-        //toast
-        Context context = getApplicationContext();
-        int duration = Toast.LENGTH_SHORT;
-        CharSequence text = "";
-
-        Toast toast = Toast.makeText(context, text, duration);
-        toast.show();
-
         return result;
     }
 
@@ -205,6 +197,14 @@ public class RecognizeActivity extends ActionBarActivity {
                     }
                     result += "\n\n";
                 }
+
+                //toast
+                Context context = getApplicationContext();
+                int duration = Toast.LENGTH_SHORT;
+                CharSequence text = result;
+
+                Toast toast = Toast.makeText(context, text, duration);
+                toast.show();
 
                 mEditText.setText(result);
             }
