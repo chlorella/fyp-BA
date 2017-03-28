@@ -42,20 +42,33 @@
             tools:ignore="UselessParent">
 
             <Button
-                android:text="Capture"
+                android:id="@+id/o_capture"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:id="@+id/o_capture"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:text="Capture" />
 
             <Button
-                android:text="Album"
+                android:id="@+id/o_album"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:id="@+id/o_album"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:text="Album" />
         </LinearLayout>
 
+        <Button
+            android:id="@+id/button3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Capture" />
+
+        <Button
+            android:id="@+id/button4"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Album" />
     </FrameLayout>
 
 </RelativeLayout>

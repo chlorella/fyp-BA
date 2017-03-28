@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="463dp">
+        android:layout_height="wrap_content">
 
         <com.flurgle.camerakit.CameraView
             android:id="@+id/camera"
@@ -21,7 +22,9 @@
             app:ckFlash="auto"
             app:ckFocus="tap"
             app:ckJpegQuality="100"
-            app:ckMethod="standard" />
+            app:ckMethod="standard">
+
+        </com.flurgle.camerakit.CameraView>
 
         <com.example.chlorella.blindassist.helper.FocusMarkerLayout
             android:id="@+id/focusMarker"
@@ -38,23 +41,45 @@
             android:id="@+id/imageView"
             android:layout_width="60dp"
             android:layout_height="100dp"
-            android:layout_above="@+id/kit_capture"
             android:layout_alignParentEnd="true" />
 
     </RelativeLayout>
 
-    <RelativeLayout
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true">
 
-        <Button
-            android:id="@+id/kit_capture"
-            style="@style/Widget.AppCompat.Button"
+        <LinearLayout
+            android:id="@+id/fullscreen_content_controls"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:text="capture" />
-    </RelativeLayout>
+            android:layout_gravity="bottom|center_horizontal"
+            android:orientation="horizontal">
 
-</LinearLayout>
+            <Button
+                android:id="@+id/capture"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Capture" />
+
+            <ToggleButton
+                android:id="@+id/toggleFlash"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Flash On"
+                tools:text="Flash OFF" />
+
+            <Button
+                android:id="@+id/album"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Album" />
+        </LinearLayout>
+
+    </FrameLayout>
+
+</RelativeLayout>
