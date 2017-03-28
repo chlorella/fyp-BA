@@ -16,6 +16,8 @@ import com.example.chlorella.blindassist.helper.FocusMarkerLayout;
 import com.flurgle.camerakit.CameraKit;
 import com.flurgle.camerakit.CameraListener;
 import com.flurgle.camerakit.CameraView;
+import com.frosquivel.magicalcamera.Functionallities.PermissionGranted;
+import com.frosquivel.magicalcamera.MagicalCamera;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -39,10 +41,21 @@ public class testCameraKit extends AppCompatActivity implements View.OnLayoutCha
     @BindView(R.id.album)
     Button album;
 
+    private PermissionGranted permissionGranted = new PermissionGranted(this);
+    private MagicalCamera magicalCamera;
+    Bitmap result;
+
+    private static final int REQUEST_TAKE_PHOTO = 0;
+    private static final int REQUEST_SELECT_IMAGE_IN_ALBUM = 1;
+    private int RESIZE_PHOTO_PIXELS_PERCENTAGE = 80;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.testcamerakit);
         ButterKnife.bind(this);
+
+        permissionGranted.checkAllMagicalCameraPermission();
+        magicalCamera = new MagicalCamera(this, RESIZE_PHOTO_PIXELS_PERCENTAGE, permissionGranted);
     }
 
     @OnTouch(R.id.focusMarker)
@@ -59,7 +72,7 @@ public class testCameraKit extends AppCompatActivity implements View.OnLayoutCha
                 super.onPictureTaken(picture);
 
                 // Create a bitmap
-                Bitmap result = BitmapFactory.decodeByteArray(picture, 0, picture.length);
+                result = BitmapFactory.decodeByteArray(picture, 0, picture.length);
                 imageView.setImageBitmap(result);
             }
         });
@@ -92,10 +105,24 @@ public class testCameraKit extends AppCompatActivity implements View.OnLayoutCha
     }
 
     @OnClick(R.id.album)
-    public void onViewClicked() {
-        Intent getImage = new Intent(Intent.ACTION_GET_CONTENT);
-        getImage.addCategory(Intent.CATEGORY_OPENABLE);
-        getImage.setType("image/jpeg");
-        testCameraKit.this.startActivity(getImage);
+    public void selectImageInAlbum(View view) {
+        magicalCamera.selectedPicture("my_header_name");
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        //this is for rotate picture in this method
+        //magicalCamera.resultPhoto(requestCode, resultCode, data, MagicalCamera.ORIENTATION_ROTATE_180);
+
+        //you should to call the method ever, for obtain the bitmap photo (= magicalCamera.getPhoto())
+        magicalCamera.resultPhoto(requestCode, resultCode, data);
+
+        if (magicalCamera.getPhoto() != null) {
+            //another form to rotate image
+            magicalCamera.setPhoto(magicalCamera.rotatePicture(magicalCamera.getPhoto(), MagicalCamera.ORIENTATION_ROTATE_NORMAL));
+
+            //set the photo in image view
+            imageView.setImageBitmap(magicalCamera.getPhoto());
+        }
     }
 }
