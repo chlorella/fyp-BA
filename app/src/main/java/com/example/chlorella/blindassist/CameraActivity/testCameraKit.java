@@ -61,6 +61,7 @@ public class testCameraKit extends AppCompatActivity implements View.OnLayoutCha
     @OnTouch(R.id.focusMarker)
     boolean onTouchCamera(View view, MotionEvent motionEvent) {
         focusMarker.focus(motionEvent.getX(), motionEvent.getY());
+
         return false;
     }
 

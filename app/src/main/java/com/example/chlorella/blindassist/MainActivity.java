@@ -7,7 +7,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.example.chlorella.blindassist.CameraActivity.ColorDetectActivity;
 import com.example.chlorella.blindassist.CameraActivity.testCameraKit;
 import com.example.chlorella.blindassist.Setting.SettingsActivity;
 
@@ -44,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
                         startActivity(nextActivity);
                         break;
                     case 1:
-                        nextActivity = new Intent(MainActivity.this, ColorDetectActivity.class);
+                        nextActivity = new Intent(MainActivity.this, AnalyzeColorActivity.class);
                         startActivity(nextActivity);
                         break;
                     case 2:
