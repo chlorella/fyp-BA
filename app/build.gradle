@@ -31,7 +31,7 @@ dependencies {
 
     compile 'com.frosquivel:magicalcamera:5.0.3'
 
-    compile 'com.flurgle:camerakit:0.9.15'
+    compile 'com.flurgle:camerakit:0.9.17'
 
     compile 'com.jakewharton:butterknife:8.4.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'

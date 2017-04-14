@@ -20,22 +20,11 @@
             app:ckCropOutput="false"
             app:ckFacing="back"
             app:ckFlash="auto"
-            app:ckFocus="tap"
+            app:ckFocus="tapWithMarker"
             app:ckJpegQuality="100"
             app:ckMethod="standard">
 
         </com.flurgle.camerakit.CameraView>
-
-        <com.example.chlorella.blindassist.helper.FocusMarkerLayout
-            android:id="@+id/focusMarker"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/camera"
-            android:layout_alignLeft="@+id/camera"
-            android:layout_alignRight="@+id/camera"
-            android:layout_alignTop="@+id/camera">
-
-        </com.example.chlorella.blindassist.helper.FocusMarkerLayout>
 
         <ImageView
             android:id="@+id/imageView"
@@ -50,6 +39,16 @@
         android:layout_height="match_parent"
         android:fitsSystemWindows="true">
 
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <Spinner
+                android:id="@+id/function"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </FrameLayout>
+
         <LinearLayout
             android:id="@+id/fullscreen_content_controls"
             android:layout_width="match_parent"
@@ -63,14 +62,6 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Capture" />
-
-            <ToggleButton
-                android:id="@+id/toggleFlash"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Flash On"
-                tools:text="Flash OFF" />
 
             <Button
                 android:id="@+id/album"

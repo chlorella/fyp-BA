@@ -1,36 +1,4 @@
-//
-// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license.
-//
-// Microsoft Cognitive Services (formerly Project Oxford): https://www.microsoft.com/cognitive-services
-//
-// Microsoft Cognitive Services (formerly Project Oxford) GitHub:
-// https://github.com/Microsoft/Cognitive-Vision-Android
-//
-// Copyright (c) Microsoft Corporation
-// All rights reserved.
-//
-// MIT License:
-// Permission is hereby granted, free of charge, to any person obtaining
-// a copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to
-// permit persons to whom the Software is furnished to do so, subject to
-// the following conditions:
-//
-// The above copyright notice and this permission notice shall be
-// included in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED ""AS IS"", WITHOUT WARRANTY OF ANY KIND,
-// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-// LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-// OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-//
-package com.example.chlorella.blindassist;
+package com.example.chlorella.blindassist.AnalysisActivity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -48,19 +16,23 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.example.chlorella.blindassist.R;
 import com.example.chlorella.blindassist.helper.ImageHelper;
 import com.google.gson.Gson;
 import com.microsoft.projectoxford.vision.VisionServiceClient;
 import com.microsoft.projectoxford.vision.VisionServiceRestClient;
-import com.microsoft.projectoxford.vision.contract.AnalysisResult;
-import com.microsoft.projectoxford.vision.contract.Caption;
+import com.microsoft.projectoxford.vision.contract.LanguageCodes;
+import com.microsoft.projectoxford.vision.contract.Line;
+import com.microsoft.projectoxford.vision.contract.OCR;
+import com.microsoft.projectoxford.vision.contract.Region;
+import com.microsoft.projectoxford.vision.contract.Word;
 import com.microsoft.projectoxford.vision.rest.VisionServiceException;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-public class DescribeActivity extends ActionBarActivity {
+public class RecognizeActivity extends ActionBarActivity {
 
     // Flag to indicate which task is to be performed.
     private static final int REQUEST_SELECT_IMAGE = 0;
@@ -82,20 +54,19 @@ public class DescribeActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_describe);
+        setContentView(R.layout.activity_recognize);
 
         if (client==null){
             client = new VisionServiceRestClient(getString(R.string.subscription_key));
         }
 
-        mButtonSelectImage = (Button)findViewById(R.id.buttonSelectImage);
         mEditText = (EditText)findViewById(R.id.editTextResult);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_describe, menu);
+        getMenuInflater().inflate(R.menu.menu_recognize, menu);
         return true;
     }
 
@@ -114,31 +85,20 @@ public class DescribeActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void doDescribe() {
-        mButtonSelectImage.setEnabled(false);
-        mEditText.setText("Describing...");
-
-        try {
-            new doRequest().execute();
-        } catch (Exception e)
-        {
-            mEditText.setText("Error encountered. Exception is: " + e.toString());
-        }
-    }
-
     // Called when the "Select Image" button is clicked.
     public void selectImage(View view) {
         mEditText.setText("");
 
         Intent intent;
-        intent = new Intent(DescribeActivity.this, com.example.chlorella.blindassist.helper.SelectImageActivity.class);
+        intent = new Intent(RecognizeActivity.this, com.example.chlorella.blindassist.helper.SelectImageActivity.class);
         startActivityForResult(intent, REQUEST_SELECT_IMAGE);
     }
 
     // Called when image selection is done.
+    // Same
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.d("DescribeActivity", "onActivityResult");
+        Log.d("AnalyzeActivity", "onActivityResult");
         switch (requestCode) {
             case REQUEST_SELECT_IMAGE:
                 if(resultCode == RESULT_OK) {
@@ -153,10 +113,10 @@ public class DescribeActivity extends ActionBarActivity {
                         imageView.setImageBitmap(mBitmap);
 
                         // Add detection log.
-                        Log.d("DescribeActivity", "Image: " + mImageUri + " resized to " + mBitmap.getWidth()
+                        Log.d("AnalyzeActivity", "Image: " + mImageUri + " resized to " + mBitmap.getWidth()
                                 + "x" + mBitmap.getHeight());
 
-                        doDescribe();
+                        doRecognize();
                     }
                 }
                 break;
@@ -165,8 +125,19 @@ public class DescribeActivity extends ActionBarActivity {
         }
     }
 
-    //process
-    //different
+
+    public void doRecognize() {
+        mButtonSelectImage.setEnabled(false);
+        mEditText.setText("Analyzing...");
+
+        try {
+            new doRequest().execute();
+        } catch (Exception e)
+        {
+            mEditText.setText("Error encountered. Exception is: " + e.toString());
+        }
+    }
+
     private String process() throws VisionServiceException, IOException {
         Gson gson = new Gson();
 
@@ -175,14 +146,17 @@ public class DescribeActivity extends ActionBarActivity {
         mBitmap.compress(Bitmap.CompressFormat.JPEG, 100, output);
         ByteArrayInputStream inputStream = new ByteArrayInputStream(output.toByteArray());
 
-        AnalysisResult v = this.client.describe(inputStream, 1);
+        OCR ocr;
+        ocr = this.client.recognizeText(inputStream, LanguageCodes.AutoDetect, true);
 
-        String result = gson.toJson(v);
+        //result = recoginize text
+        String result = gson.toJson(ocr);
         Log.d("result", result);
 
         return result;
     }
 
+    //do request
     private class doRequest extends AsyncTask<String, String, String> {
         // Store error message
         private Exception e = null;
@@ -206,43 +180,34 @@ public class DescribeActivity extends ActionBarActivity {
             super.onPostExecute(data);
             // Display based on error existence
 
-            mEditText.setText("");
             if (e != null) {
                 mEditText.setText("Error: " + e.getMessage());
                 this.e = null;
             } else {
-                //gson
                 Gson gson = new Gson();
-                AnalysisResult result = gson.fromJson(data, AnalysisResult.class);
+                OCR r = gson.fromJson(data, OCR.class);
 
-                mEditText.append("Image format: " + result.metadata.format + "\n");
-                mEditText.append("Image width: " + result.metadata.width + ", height:" + result.metadata.height + "\n");
-                mEditText.append("\n");
-                CharSequence text = "";
-
-                //result.description.captions = .description text
-                for (Caption caption: result.description.captions) {
-                    mEditText.append("Caption: " + caption.text + ", confidence: " + caption.confidence + "\n");
-                    text = text + caption.text + "\n";
+                String result = "";
+                for (Region reg : r.regions) {
+                    for (Line line : reg.lines) {
+                        for (Word word : line.words) {
+                            result += word.text + " ";
+                        }
+                        result += "\n";
+                    }
+                    result += "\n\n";
                 }
-                mEditText.append("\n");
 
+                //toast
                 Context context = getApplicationContext();
                 int duration = Toast.LENGTH_SHORT;
+                CharSequence text = result;
 
                 Toast toast = Toast.makeText(context, text, duration);
                 toast.show();
 
-                for (String tag: result.description.tags) {
-                    mEditText.append("Tag: " + tag + "\n");
-                }
-                mEditText.append("\n");
-
-                mEditText.append("\n--- Raw Data ---\n\n");
-                mEditText.append(data);
-                mEditText.setSelection(0);
+                mEditText.setText(result);
             }
-
             mButtonSelectImage.setEnabled(true);
         }
     }

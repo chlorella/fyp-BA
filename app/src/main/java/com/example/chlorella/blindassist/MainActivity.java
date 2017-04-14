@@ -7,6 +7,9 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.example.chlorella.blindassist.AnalysisActivity.AnalyzeColorActivity;
+import com.example.chlorella.blindassist.AnalysisActivity.DescribeActivity;
+import com.example.chlorella.blindassist.AnalysisActivity.RecognizeActivity;
 import com.example.chlorella.blindassist.CameraActivity.testCameraKit;
 import com.example.chlorella.blindassist.Setting.SettingsActivity;
 

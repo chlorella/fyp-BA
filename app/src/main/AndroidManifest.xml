@@ -24,26 +24,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".CameraActivity.SmallToolActivity"
-            android:screenOrientation="portrait"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="Small Tool"></activity>
-        <activity
-            android:name=".CameraActivity.ObjectDetectActivity"
-            android:screenOrientation="portrait"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="Object Detector"></activity>
-        <activity
-            android:name=".CameraActivity.ColorDetectActivity"
-            android:screenOrientation="portrait"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="Color Detector"></activity>
-        <activity
-            android:name=".CameraActivity.WordDetectActivity"
-            android:screenOrientation="portrait"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="Word Detector"></activity>
-        <activity
             android:name=".Setting.SettingsActivity"
             android:label="@string/title_activity_settings"></activity>
         <activity
@@ -52,28 +32,28 @@
             android:configChanges="orientation|screenSize"
             android:label="kit"></activity>
         <activity
-            android:name=".DescribeActivity"
+            android:name=".AnalysisActivity.DescribeActivity"
             android:label="@string/title_activity_describe"
             android:parentActivityName=".MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.chlorella.blindassist.DescribeActivity" />
+                android:value="com.example.chlorella.blindassist.AnalysisActivity.DescribeActivity" />
         </activity>
         <activity
-            android:name=".RecognizeActivity"
+            android:name=".AnalysisActivity.RecognizeActivity"
             android:label="@string/title_activity_recognize"
             android:parentActivityName=".MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.chlorella.blindassist.RecognizeActivity" />
+                android:value="com.example.chlorella.blindassist.AnalysisActivity.RecognizeActivity" />
         </activity>
         <activity
-            android:name=".AnalyzeColorActivity"
+            android:name=".AnalysisActivity.AnalyzeColorActivity"
             android:label="@string/title_activity_recognize"
             android:parentActivityName=".MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.chlorella.blindassist.AnalyzeColorActivity" />
+                android:value="com.example.chlorella.blindassist.AnalysisActivity.AnalyzeColorActivity" />
         </activity>
         <activity
             android:name=".helper.SelectImageActivity"

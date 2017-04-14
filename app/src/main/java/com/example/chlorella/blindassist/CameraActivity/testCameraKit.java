@@ -5,15 +5,11 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ToggleButton;
 
 import com.example.chlorella.blindassist.R;
-import com.example.chlorella.blindassist.helper.FocusMarkerLayout;
-import com.flurgle.camerakit.CameraKit;
 import com.flurgle.camerakit.CameraListener;
 import com.flurgle.camerakit.CameraView;
 import com.frosquivel.magicalcamera.Functionallities.PermissionGranted;
@@ -22,7 +18,6 @@ import com.frosquivel.magicalcamera.MagicalCamera;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import butterknife.OnTouch;
 
 
 /**
@@ -32,12 +27,8 @@ import butterknife.OnTouch;
 public class testCameraKit extends AppCompatActivity implements View.OnLayoutChangeListener {
     @BindView(R.id.camera)
     CameraView camera;
-    @BindView(R.id.focusMarker)
-    FocusMarkerLayout focusMarker;
     @BindView(R.id.imageView)
     ImageView imageView;
-    @BindView(R.id.toggleFlash)
-    ToggleButton toggleFlash;
     @BindView(R.id.album)
     Button album;
 
@@ -58,13 +49,6 @@ public class testCameraKit extends AppCompatActivity implements View.OnLayoutCha
         magicalCamera = new MagicalCamera(this, RESIZE_PHOTO_PIXELS_PERCENTAGE, permissionGranted);
     }
 
-    @OnTouch(R.id.focusMarker)
-    boolean onTouchCamera(View view, MotionEvent motionEvent) {
-        focusMarker.focus(motionEvent.getX(), motionEvent.getY());
-
-        return false;
-    }
-
     @OnClick(R.id.capture)
     void capturePhoto() {
         camera.setCameraListener(new CameraListener() {
@@ -80,15 +64,6 @@ public class testCameraKit extends AppCompatActivity implements View.OnLayoutCha
         camera.captureImage();
     }
 
-    @OnClick(R.id.toggleFlash)
-    void toggleFlash() {
-        if (toggleFlash.isChecked()) {
-            camera.setFlash(CameraKit.Constants.FLASH_AUTO);
-        } else {
-            camera.setFlash(CameraKit.Constants.FLASH_OFF);
-        }
-    }
-
     protected void onResume() {
         super.onResume();
         camera.start();
@@ -102,6 +77,10 @@ public class testCameraKit extends AppCompatActivity implements View.OnLayoutCha
 
     @Override
     public void onLayoutChange(View view, int i, int i1, int i2, int i3, int i4, int i5, int i6, int i7) {
+
+    }
+
+    public void switchIntent(){
 
     }
 
@@ -124,6 +103,7 @@ public class testCameraKit extends AppCompatActivity implements View.OnLayoutCha
 
             //set the photo in image view
             imageView.setImageBitmap(magicalCamera.getPhoto());
+
         }
     }
 }
