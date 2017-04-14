@@ -33,17 +33,13 @@
 package com.example.chlorella.blindassist.AnalysisActivity;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -61,22 +57,19 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-public class DescribeActivity extends ActionBarActivity {
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
+public class DescribeActivity extends ActionBarActivity {
+    @BindView(R.id.selectedImage)
+    ImageView selectedImage;
+    @BindView(R.id.editTextResult)
+    EditText editText;
+    // The image selected to detect.
+    private Bitmap mBitmap;
     // Flag to indicate which task is to be performed.
     private static final int REQUEST_SELECT_IMAGE = 0;
 
-    // The button to select an image
-    private Button mButtonSelectImage;
-
-    // The URI of the image selected to detect.
-    private Uri mImageUri;
-
-    // The image selected to detect.
-    private Bitmap mBitmap;
-
-    // The edit to show status and result.
-    private EditText mEditText;
 
     private VisionServiceClient client;
 
@@ -84,13 +77,26 @@ public class DescribeActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_describe);
+        ButterKnife.bind(this);
 
-        if (client==null){
+        if (client == null) {
             client = new VisionServiceRestClient(getString(R.string.subscription_key));
         }
 
-        mButtonSelectImage = (Button)findViewById(R.id.buttonSelectImage);
-        mEditText = (EditText)findViewById(R.id.editTextResult);
+        mBitmap = ImageHelper.getImage();
+        if (mBitmap == null) {
+            finish();
+            return;
+        }else{
+            // Show the image on screen.
+            ImageView imageView = (ImageView) findViewById(R.id.selectedImage);
+            imageView.setImageBitmap(mBitmap);
+
+            // Add detection log.
+            Log.d("DescribeActivity", "get Bitmap");
+
+            doDescribe();
+        }
     }
 
     @Override
@@ -116,53 +122,12 @@ public class DescribeActivity extends ActionBarActivity {
     }
 
     public void doDescribe() {
-        mButtonSelectImage.setEnabled(false);
-        mEditText.setText("Describing...");
+        editText.setText("Describing...");
 
         try {
             new doRequest().execute();
-        } catch (Exception e)
-        {
-            mEditText.setText("Error encountered. Exception is: " + e.toString());
-        }
-    }
-
-    // Called when the "Select Image" button is clicked.
-    public void selectImage(View view) {
-        mEditText.setText("");
-
-        Intent intent;
-        intent = new Intent(DescribeActivity.this, com.example.chlorella.blindassist.helper.SelectImageActivity.class);
-        startActivityForResult(intent, REQUEST_SELECT_IMAGE);
-    }
-
-    // Called when image selection is done.
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.d("DescribeActivity", "onActivityResult");
-        switch (requestCode) {
-            case REQUEST_SELECT_IMAGE:
-                if(resultCode == RESULT_OK) {
-                    // If image is selected successfully, set the image URI and bitmap.
-                    mImageUri = data.getData();
-
-                    mBitmap = ImageHelper.loadSizeLimitedBitmapFromUri(
-                            mImageUri, getContentResolver());
-                    if (mBitmap != null) {
-                        // Show the image on screen.
-                        ImageView imageView = (ImageView) findViewById(R.id.selectedImage);
-                        imageView.setImageBitmap(mBitmap);
-
-                        // Add detection log.
-                        Log.d("DescribeActivity", "Image: " + mImageUri + " resized to " + mBitmap.getWidth()
-                                + "x" + mBitmap.getHeight());
-
-                        doDescribe();
-                    }
-                }
-                break;
-            default:
-                break;
+        } catch (Exception e) {
+            editText.setText("Error encountered. Exception is: " + e.toString());
         }
     }
 
@@ -207,26 +172,26 @@ public class DescribeActivity extends ActionBarActivity {
             super.onPostExecute(data);
             // Display based on error existence
 
-            mEditText.setText("");
+            editText.setText("");
             if (e != null) {
-                mEditText.setText("Error: " + e.getMessage());
+                editText.setText("Error: " + e.getMessage());
                 this.e = null;
             } else {
                 //gson
                 Gson gson = new Gson();
                 AnalysisResult result = gson.fromJson(data, AnalysisResult.class);
 
-                mEditText.append("Image format: " + result.metadata.format + "\n");
-                mEditText.append("Image width: " + result.metadata.width + ", height:" + result.metadata.height + "\n");
-                mEditText.append("\n");
+                editText.append("Image format: " + result.metadata.format + "\n");
+                editText.append("Image width: " + result.metadata.width + ", height:" + result.metadata.height + "\n");
+                editText.append("\n");
                 CharSequence text = "";
 
                 //result.description.captions = .description text
-                for (Caption caption: result.description.captions) {
-                    mEditText.append("Caption: " + caption.text + ", confidence: " + caption.confidence + "\n");
+                for (Caption caption : result.description.captions) {
+                    editText.append("Caption: " + caption.text + ", confidence: " + caption.confidence + "\n");
                     text = text + caption.text + "\n";
                 }
-                mEditText.append("\n");
+                editText.append("\n");
 
                 Context context = getApplicationContext();
                 int duration = Toast.LENGTH_SHORT;
@@ -234,17 +199,15 @@ public class DescribeActivity extends ActionBarActivity {
                 Toast toast = Toast.makeText(context, text, duration);
                 toast.show();
 
-                for (String tag: result.description.tags) {
-                    mEditText.append("Tag: " + tag + "\n");
+                for (String tag : result.description.tags) {
+                   editText.append("Tag: " + tag + "\n");
                 }
-                mEditText.append("\n");
+                editText.append("\n");
 
-                mEditText.append("\n--- Raw Data ---\n\n");
-                mEditText.append(data);
-                mEditText.setSelection(0);
+//                editText.append("\n--- Raw Data ---\n\n");
+//                editText.append(data);
+//                editText.setSelection(0);
             }
-
-            mButtonSelectImage.setEnabled(true);
         }
     }
 }

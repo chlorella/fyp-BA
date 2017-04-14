@@ -33,10 +33,8 @@
 package com.example.chlorella.blindassist.AnalysisActivity;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -72,14 +70,8 @@ public class AnalyzeColorActivity extends ActionBarActivity {
     @BindView(R.id.editTextResult)
     EditText editText;
 
-    // The URI of the image selected to detect.
-    private Uri mImageUri;
-
     // The image selected to detect.
     private Bitmap mBitmap;
-
-    // The edit to show status and result.
-
 
     private VisionServiceClient client;
 
@@ -91,6 +83,23 @@ public class AnalyzeColorActivity extends ActionBarActivity {
 
         if (client == null) {
             client = new VisionServiceRestClient(getString(R.string.subscription_key));
+        }
+
+        mBitmap = ImageHelper.getImage();
+        if (mBitmap == null) {
+            finish();
+            return;
+        }else{
+            // Show the image on screen.
+            ImageView imageView = (ImageView) findViewById(R.id.selectedImage);
+            imageView.setImageBitmap(mBitmap);
+
+            // Add detection log.
+            Log.d("AnalyzeActivity", "Image: " + mBitmap.getWidth()
+                    + "x" + mBitmap.getHeight());
+
+            editText.setText("processing");
+            doAnalyze();
         }
     }
 
@@ -125,37 +134,6 @@ public class AnalyzeColorActivity extends ActionBarActivity {
             editText.setText("Error encountered. Exception is: " + e.toString());
         }
     }
-
-    // Called when image selection is done.
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.d("AnalyzeActivity", "onActivityResult");
-        switch (requestCode) {
-            case REQUEST_SELECT_IMAGE:
-                if (resultCode == RESULT_OK) {
-                    // If image is selected successfully, set the image URI and bitmap.
-                    mImageUri = data.getData();
-
-                    mBitmap = ImageHelper.loadSizeLimitedBitmapFromUri(
-                            mImageUri, getContentResolver());
-                    if (mBitmap != null) {
-                        // Show the image on screen.
-                        ImageView imageView = (ImageView) findViewById(R.id.selectedImage);
-                        imageView.setImageBitmap(mBitmap);
-
-                        // Add detection log.
-                        Log.d("AnalyzeActivity", "Image: " + mImageUri + " resized to " + mBitmap.getWidth()
-                                + "x" + mBitmap.getHeight());
-
-                        doAnalyze();
-                    }
-                }
-                break;
-            default:
-                break;
-        }
-    }
-
 
     private String process() throws VisionServiceException, IOException {
         Gson gson = new Gson();

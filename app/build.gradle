@@ -29,7 +29,7 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.microsoft.projectoxford:vision:1.0.374'
 
-    compile 'com.frosquivel:magicalcamera:5.0.3'
+    compile 'com.frosquivel:magicalcamera:5.0.5'
 
     compile 'com.flurgle:camerakit:0.9.17'
 

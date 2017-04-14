@@ -1,5 +1,6 @@
 package com.example.chlorella.blindassist.CameraActivity;
 
+import android.Manifest;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -9,11 +10,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
+import com.example.chlorella.blindassist.AnalysisActivity.AnalyzeColorActivity;
 import com.example.chlorella.blindassist.R;
+import com.example.chlorella.blindassist.helper.ImageHelper;
 import com.flurgle.camerakit.CameraListener;
 import com.flurgle.camerakit.CameraView;
-import com.frosquivel.magicalcamera.Functionallities.PermissionGranted;
 import com.frosquivel.magicalcamera.MagicalCamera;
+import com.frosquivel.magicalcamera.MagicalPermissions;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -32,9 +35,8 @@ public class testCameraKit extends AppCompatActivity implements View.OnLayoutCha
     @BindView(R.id.album)
     Button album;
 
-    private PermissionGranted permissionGranted = new PermissionGranted(this);
+    private MagicalPermissions magicalPermissions;
     private MagicalCamera magicalCamera;
-    Bitmap result;
 
     private static final int REQUEST_TAKE_PHOTO = 0;
     private static final int REQUEST_SELECT_IMAGE_IN_ALBUM = 1;
@@ -45,24 +47,33 @@ public class testCameraKit extends AppCompatActivity implements View.OnLayoutCha
         setContentView(R.layout.testcamerakit);
         ButterKnife.bind(this);
 
-        permissionGranted.checkAllMagicalCameraPermission();
-        magicalCamera = new MagicalCamera(this, RESIZE_PHOTO_PIXELS_PERCENTAGE, permissionGranted);
+        String[] permissions = new String[] {
+                Manifest.permission.CAMERA,
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_FINE_LOCATION
+        };
+        magicalPermissions = new MagicalPermissions(this, permissions);
+        magicalCamera = new MagicalCamera(this,RESIZE_PHOTO_PIXELS_PERCENTAGE, magicalPermissions);
     }
 
     @OnClick(R.id.capture)
     void capturePhoto() {
         camera.setCameraListener(new CameraListener() {
             @Override
-            public void onPictureTaken(byte[] picture) {
-                super.onPictureTaken(picture);
-
+            public void onPictureTaken(byte[] jpeg) {
                 // Create a bitmap
-                result = BitmapFactory.decodeByteArray(picture, 0, picture.length);
-                imageView.setImageBitmap(result);
+                Bitmap bitmap = BitmapFactory.decodeByteArray(jpeg, 0, jpeg.length);
+
+                imageView.setImageBitmap(bitmap);
+                switchIntent(bitmap);
             }
         });
         camera.captureImage();
     }
+
+
 
     protected void onResume() {
         super.onResume();
@@ -80,8 +91,10 @@ public class testCameraKit extends AppCompatActivity implements View.OnLayoutCha
 
     }
 
-    public void switchIntent(){
-
+    public void switchIntent(Bitmap bmap){
+        ImageHelper.setImage(bmap);
+        Intent intent = new Intent(testCameraKit.this, AnalyzeColorActivity.class);
+        startActivity(intent);
     }
 
     @OnClick(R.id.album)
@@ -103,7 +116,6 @@ public class testCameraKit extends AppCompatActivity implements View.OnLayoutCha
 
             //set the photo in image view
             imageView.setImageBitmap(magicalCamera.getPhoto());
-
         }
     }
 }
