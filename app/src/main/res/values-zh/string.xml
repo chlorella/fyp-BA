@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="subscription_key">29efd8c1788b4df3b2579ceb416001cc</string>
+    <string name="google_key">AIzaSyDK3FN-WLzo6o3Wv87NlUHzETAsxjceg0A</string>
+
     <string-array name="classNames">
         <item>Small tool</item>
         <item>Color detector</item>
