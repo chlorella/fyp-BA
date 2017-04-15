@@ -30,8 +30,8 @@ dependencies {
     compile 'com.microsoft.projectoxford:vision:1.0.374'
 
     compile 'com.frosquivel:magicalcamera:5.0.5'
-
     compile 'com.flurgle:camerakit:0.9.17'
+
 
     compile 'com.jakewharton:butterknife:8.4.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'

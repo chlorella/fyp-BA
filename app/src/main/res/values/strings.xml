@@ -1,8 +1,5 @@
 <resources>
     <string name="app_name">BlindAssist</string>
-    <string name="description_info">Info</string>
-    <string name="request_permission">This sample needs camera permission.</string>
-    <string name="camera_error">This device doesn\'t support Camera2 API.</string>
     <string name="title_activity_settings">Settings</string>
     <!-- Strings related to Settings -->
 
@@ -50,20 +47,6 @@
         <item>-1</item>
     </string-array>
 
-    <string-array name="list_preference_entries">
-        <item>Entry 1</item>
-        <item>Entry 2</item>
-        <item>Entry 3</item>
-    </string-array>
-
-    <string-array name="list_preference_entry_values">
-        <item>1</item>
-        <item>2</item>
-        <item>3</item>
-    </string-array>
-
-    <string-array name="multi_select_list_preference_default_value" />
-
     <string name="pref_title_system_sync_settings">System sync settings</string>
 
     <!-- Example settings for Notifications -->
@@ -87,14 +70,9 @@
     </string-array>
 
     <!-- Select image activity -->
-    <string name="select_an_image">Select an Image</string>
-    <string name="take_photo">Take a Photo</string>
-    <string name="select_image_in_album">From Gallery</string>
 
     <string name="action_settings">Settings</string>
-    <string name="title_activity_analyze">Analyze Image</string>
-    <string name="title_activity_analyze_domain">Analyze Image In Domain</string>
     <string name="title_activity_describe">Describe Image</string>
     <string name="title_activity_recognize">Recognize Text</string>
-    <string name="title_activity_thumbnail">Thumbnail Image</string>
+    <string name="title_activity_analysis">Analysis Color</string>
 </resources>

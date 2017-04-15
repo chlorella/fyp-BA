@@ -1,7 +1,6 @@
 package com.example.chlorella.blindassist.AnalysisActivity;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -9,14 +8,12 @@ import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.chlorella.blindassist.R;
 import com.example.chlorella.blindassist.helper.ImageHelper;
-import com.example.chlorella.blindassist.helper.SelectImageActivity;
 import com.google.gson.Gson;
 import com.microsoft.projectoxford.vision.VisionServiceClient;
 import com.microsoft.projectoxford.vision.VisionServiceRestClient;
@@ -36,8 +33,6 @@ import butterknife.ButterKnife;
 
 public class RecognizeActivity extends ActionBarActivity {
 
-    // Flag to indicate which task is to be performed.
-    private static final int REQUEST_SELECT_IMAGE = 0;
     @BindView(R.id.selectedImage)
     ImageView selectedImage;
     @BindView(R.id.editTextResult)
@@ -65,8 +60,7 @@ public class RecognizeActivity extends ActionBarActivity {
             return;
         }else{
             // Show the image on screen.
-            ImageView imageView = (ImageView) findViewById(R.id.selectedImage);
-            imageView.setImageBitmap(mBitmap);
+            selectedImage.setImageBitmap(mBitmap);
 
             // Add detection log.
             Log.d("AnalyzeActivity", "recognizing");
@@ -96,16 +90,6 @@ public class RecognizeActivity extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
-    // Called when the "Select Image" button is clicked.
-    public void selectImage(View view) {
-        editText.setText("");
-
-        Intent intent;
-        intent = new Intent(RecognizeActivity.this, SelectImageActivity.class);
-        startActivityForResult(intent, REQUEST_SELECT_IMAGE);
-    }
-
 
     public void doRecognize() {
         editText.setText("Analyzing...");

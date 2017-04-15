@@ -17,16 +17,17 @@
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:weightSum="1">
 
             <ImageView
                 android:id="@+id/selectedImage"
                 android:layout_width="match_parent"
-                android:layout_height="255dp"
-                android:layout_toRightOf="@+id/image_control"
+                android:layout_height="127dp"
+                android:layout_margin="6dp"
                 android:layout_toEndOf="@+id/image_control"
-                android:background="#E0E0E0"
-                android:layout_margin="6dp"/>
+                android:layout_toRightOf="@+id/image_control"
+                android:background="#E0E0E0" />
 
         </LinearLayout>
 
