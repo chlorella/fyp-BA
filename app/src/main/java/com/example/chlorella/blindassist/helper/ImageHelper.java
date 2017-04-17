@@ -42,16 +42,49 @@ import java.lang.ref.WeakReference;
  * Defined several functions to load, draw, save, resize, and rotate images.
  */
 public class ImageHelper {
-
+    private static int scale = 1200;
     private static WeakReference<Bitmap> image;
+    private static WeakReference<Bitmap> sImage;
 
     public static void setImage(@Nullable Bitmap image) {
         Log.d("ImageHelper", "setImage");
         ImageHelper.image = image != null ? new WeakReference<>(image) : null;
+        ImageHelper.sImage = image!= null ? new WeakReference<>(scaleBitmapDown(image,scale)) : null;
+    }
+
+    public static void setScale(int scale){
+        ImageHelper.scale = scale;
+        ImageHelper.sImage = image!= null ? new WeakReference<>(scaleBitmapDown(image.get(),scale)) : null;
     }
 
     @Nullable
     public static Bitmap getImage() {
         return image != null ? image.get() : null;
+    }
+
+    @Nullable
+    public static Bitmap getScaledImage() {
+        return sImage != null ? sImage.get() : null;
+    }
+
+    @Nullable
+    public static Bitmap scaleBitmapDown(Bitmap bitmap, int maxDimension) {
+
+        int originalWidth = bitmap.getWidth();
+        int originalHeight = bitmap.getHeight();
+        int resizedWidth = maxDimension;
+        int resizedHeight = maxDimension;
+
+        if (originalHeight > originalWidth) {
+            resizedHeight = maxDimension;
+            resizedWidth = (int) (resizedHeight * (float) originalWidth / (float) originalHeight);
+        } else if (originalWidth > originalHeight) {
+            resizedWidth = maxDimension;
+            resizedHeight = (int) (resizedWidth * (float) originalHeight / (float) originalWidth);
+        } else if (originalHeight == originalWidth) {
+            resizedHeight = maxDimension;
+            resizedWidth = maxDimension;
+        }
+        return Bitmap.createScaledBitmap(bitmap, resizedWidth, resizedHeight, false);
     }
 }
