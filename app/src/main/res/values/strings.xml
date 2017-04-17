@@ -13,14 +13,27 @@
     <string name="btn_capture">Recognize</string>
     <string name="btn_album">Album</string>
 
-    <string name="text_function">Function</string>
+    <string name="menu_function">Function</string>
     <string-array
         name="function_array">
-         <item
-             >Describe Image</item>
-        <item
-            >Analysis Color</item>
-        <item
-            >Recognize Text</item>
+         <item>Describe Image</item>
+        <item>Analysis Color</item>
+        <item>Recognize Text</item>
+    </string-array>
+
+    <string name="menu_scale">Compass Scale</string>
+    <string-array
+        name="scale_array">
+        <item>50%</item>
+        <item>75%</item>
+        <item>100%</item>
+    </string-array>
+
+    <string name="menu_language">Language</string>
+    <string-array
+        name="language_array">
+        <item>Default</item>
+        <item>English</item>
+        <item>Chinese</item>
     </string-array>
 </resources>

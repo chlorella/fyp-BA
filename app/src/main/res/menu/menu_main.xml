@@ -4,6 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".AnalysisActivity.DescribeActivity">
 
-    <item android:id="@+id/function" android:title="@string/text_function"
+    <item android:id="@+id/function" android:title="@string/menu_function"
+        android:orderInCategory="100" app:showAsAction="never" />
+    <item android:id="@+id/scale" android:title="@string/menu_scale"
+        android:orderInCategory="100" app:showAsAction="never" />
+    <item android:id="@+id/language" android:title="@string/menu_language"
         android:orderInCategory="100" app:showAsAction="never" />
 </menu>

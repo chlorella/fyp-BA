@@ -26,6 +26,8 @@ import com.flurgle.camerakit.CameraView;
 import com.frosquivel.magicalcamera.MagicalCamera;
 import com.frosquivel.magicalcamera.MagicalPermissions;
 
+import java.util.Locale;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -50,7 +52,7 @@ public class MainActivity extends Activity {
     private static int function = 0;
     private String[] fArray;
 
-    private int RESIZE_PHOTO_PIXELS_PERCENTAGE = 50;
+    private int scale = 50;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,9 +67,28 @@ public class MainActivity extends Activity {
                 Manifest.permission.ACCESS_FINE_LOCATION
         };
         magicalPermissions = new MagicalPermissions(this, permissions);
-        magicalCamera = new MagicalCamera(this, RESIZE_PHOTO_PIXELS_PERCENTAGE, magicalPermissions);
+        magicalCamera = new MagicalCamera(this, scale, magicalPermissions);
         fArray = getResources().getStringArray(R.array.function_array);
         fText.setText(fArray[function]);
+    }
+
+    public void setScale(int i){
+        if(i == 0){
+            scale = 50;
+        }else if(i == 1){
+            scale = 75;
+        }else if(i == 2){
+            scale = 100;
+        }
+        ImageHelper.setScale(scale);
+        magicalCamera.setResizePhoto(scale);
+        Context context = getApplicationContext();
+        int duration = Toast.LENGTH_SHORT;
+        String[] st = getResources().getStringArray(R.array.scale_array);
+        CharSequence text = st[i];
+
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.show();
     }
 
     public void setFunction(int f) {
@@ -96,12 +117,39 @@ public class MainActivity extends Activity {
         int id = item.getItemId();
         if (id == R.id.function) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle(R.string.text_function);
+            builder.setTitle(R.string.menu_function);
             builder.setItems(R.array.function_array, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
                     // The 'which' argument contains the index position
                     // of the selected item
                     setFunction(which);
+                }
+            });
+            builder.create().show();
+        }else if(id == R.id.scale){
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(R.string.menu_scale);
+            builder.setItems(R.array.scale_array, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    // The 'which' argument contains the index position
+                    // of the selected item
+                    setScale(which);
+                }
+            });
+            builder.create().show();
+        }else if(id == R.id.language){
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(R.string.menu_language);
+            builder.setItems(R.array.language_array, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    // The 'which' argument contains the index position
+                    // of the selected item
+                    Context context = getApplicationContext();
+                    int duration = Toast.LENGTH_SHORT;
+                    CharSequence text = Locale.getDefault().toString();
+
+                    Toast toast = Toast.makeText(context, text, duration);
+                    toast.show();
                 }
             });
             builder.create().show();

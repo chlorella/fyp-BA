@@ -38,12 +38,13 @@ public class RecognizeActivity extends Activity {
     @BindView(R.id.editTextResult)
     EditText editText;
 
-    // The image selected to detect.
+    // The image selected to detect(for display).
     private Bitmap rBitmap;
-
-
-    private VisionServiceClient client;
+    // The image selected to detect(for display).
     private Bitmap sBitmap;
+
+    //Vision Service Client provided form MS
+    private VisionServiceClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

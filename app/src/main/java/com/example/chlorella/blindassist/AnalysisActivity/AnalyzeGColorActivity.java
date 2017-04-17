@@ -46,7 +46,7 @@ import android.widget.ImageView;
 import com.example.chlorella.blindassist.R;
 import com.example.chlorella.blindassist.helper.ColorHelper;
 import com.example.chlorella.blindassist.helper.ImageHelper;
-import com.example.chlorella.blindassist.helper.PackageManagerUtils;
+import com.example.chlorella.blindassist.Utils.PackageManagerUtils;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.client.http.HttpTransport;

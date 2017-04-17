@@ -1,4 +1,4 @@
-package com.example.chlorella.blindassist.helper;
+package com.example.chlorella.blindassist.Utils;
 
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
