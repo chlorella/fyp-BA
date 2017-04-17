@@ -32,12 +32,12 @@
 //
 package com.example.chlorella.blindassist.AnalysisActivity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -61,7 +61,7 @@ import java.io.IOException;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class AnalyzeColorActivity extends ActionBarActivity {
+public class AnalyzeColorActivity extends Activity {
 
     // Flag to indicate which task is to be performed.
     private static final int REQUEST_SELECT_IMAGE = 0;
@@ -71,9 +71,10 @@ public class AnalyzeColorActivity extends ActionBarActivity {
     EditText editText;
 
     // The image selected to detect.
-    private Bitmap mBitmap;
+    private Bitmap rBitmap;
 
     private VisionServiceClient client;
+    private Bitmap sBitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,18 +86,18 @@ public class AnalyzeColorActivity extends ActionBarActivity {
             client = new VisionServiceRestClient(getString(R.string.subscription_key));
         }
 
-        mBitmap = ImageHelper.getImage();
-        if (mBitmap == null) {
+        rBitmap = ImageHelper.getImage();
+        sBitmap = ImageHelper.getScaledImage();
+        if (rBitmap == null || sBitmap == null) {
             finish();
             return;
         }else{
             // Show the image on screen.
-            ImageView imageView = (ImageView) findViewById(R.id.selectedImage);
-            imageView.setImageBitmap(mBitmap);
+            selectedImage.setImageBitmap(rBitmap);
 
             // Add detection log.
-            Log.d("AnalyzeActivity", "Image: " + mBitmap.getWidth()
-                    + "x" + mBitmap.getHeight());
+            Log.d("AnalyzeActivity", "Image: " + rBitmap.getWidth()
+                    + "x" + rBitmap.getHeight());
 
             editText.setText("processing");
             doAnalyze();
@@ -142,7 +143,7 @@ public class AnalyzeColorActivity extends ActionBarActivity {
 
         // Put the image into an input stream for detection.
         ByteArrayOutputStream output = new ByteArrayOutputStream();
-        mBitmap.compress(Bitmap.CompressFormat.JPEG, 100, output);
+        sBitmap.compress(Bitmap.CompressFormat.JPEG, 100, output);
         ByteArrayInputStream inputStream = new ByteArrayInputStream(output.toByteArray());
 
         AnalysisResult v = this.client.analyzeImage(inputStream, features, details);

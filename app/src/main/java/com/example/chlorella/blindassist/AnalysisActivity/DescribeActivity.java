@@ -32,11 +32,11 @@
 //
 package com.example.chlorella.blindassist.AnalysisActivity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -60,13 +60,14 @@ import java.io.IOException;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class DescribeActivity extends ActionBarActivity {
+public class DescribeActivity extends Activity {
     @BindView(R.id.selectedImage)
     ImageView selectedImage;
     @BindView(R.id.editTextResult)
     EditText editText;
     // The image selected to detect.
-    private Bitmap mBitmap;
+    private Bitmap rBitmap;
+    private Bitmap sBitmap;
     // Flag to indicate which task is to be performed.
     private static final int REQUEST_SELECT_IMAGE = 0;
 
@@ -83,14 +84,14 @@ public class DescribeActivity extends ActionBarActivity {
             client = new VisionServiceRestClient(getString(R.string.subscription_key));
         }
 
-        mBitmap = ImageHelper.getImage();
-        if (mBitmap == null) {
+        rBitmap = ImageHelper.getImage();
+        sBitmap = ImageHelper.getScaledImage();
+        if (rBitmap == null || sBitmap == null) {
             finish();
             return;
         }else{
             // Show the image on screen.
-            ImageView imageView = (ImageView) findViewById(R.id.selectedImage);
-            imageView.setImageBitmap(mBitmap);
+            selectedImage.setImageBitmap(rBitmap);
 
             // Add detection log.
             Log.d("DescribeActivity", "get Bitmap");
@@ -138,7 +139,7 @@ public class DescribeActivity extends ActionBarActivity {
 
         // Put the image into an input stream for detection.
         ByteArrayOutputStream output = new ByteArrayOutputStream();
-        mBitmap.compress(Bitmap.CompressFormat.JPEG, 100, output);
+        sBitmap.compress(Bitmap.CompressFormat.JPEG, 50, output);
         ByteArrayInputStream inputStream = new ByteArrayInputStream(output.toByteArray());
 
         AnalysisResult v = this.client.describe(inputStream, 1);
@@ -193,6 +194,7 @@ public class DescribeActivity extends ActionBarActivity {
                 }
                 editText.append("\n");
 
+                //Context
                 Context context = getApplicationContext();
                 int duration = Toast.LENGTH_SHORT;
 

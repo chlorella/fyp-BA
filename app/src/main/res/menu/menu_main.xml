@@ -4,5 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".AnalysisActivity.DescribeActivity">
 
+    <item android:id="@+id/function" android:title="@string/text_function"
         android:orderInCategory="100" app:showAsAction="never" />
 </menu>

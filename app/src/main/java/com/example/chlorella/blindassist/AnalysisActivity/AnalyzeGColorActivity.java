@@ -32,11 +32,11 @@
 //
 package com.example.chlorella.blindassist.AnalysisActivity;
 
+import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -72,21 +72,20 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class AnalyzeGColorActivity extends ActionBarActivity {
+public class AnalyzeGColorActivity extends Activity {
 
-    // Flag to indicate which task is to be performed.
-    private static final int REQUEST_SELECT_IMAGE = 0;
     @BindView(R.id.selectedImage)
     ImageView selectedImage;
     @BindView(R.id.editTextResult)
     EditText editText;
 
     // The image selected to detect.
-    private Bitmap mBitmap;
+    private Bitmap rBitmap;
     private static final String TAG = AnalyzeColorActivity.class.getSimpleName();
     private VisionServiceClient client;
     private static final String ANDROID_CERT_HEADER = "X-Android-Cert";
     private static final String ANDROID_PACKAGE_HEADER = "X-Android-Package";
+    private Bitmap sBitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,23 +97,23 @@ public class AnalyzeGColorActivity extends ActionBarActivity {
             client = new VisionServiceRestClient(getString(R.string.subscription_key));
         }
 
-        mBitmap = ImageHelper.getImage();
-        if (mBitmap == null) {
+        rBitmap = ImageHelper.getImage();
+        sBitmap = ImageHelper.getScaledImage();
+        if (rBitmap == null || sBitmap == null) {
             finish();
             return;
         }else{
             // Show the image on screen.
             ImageView imageView = (ImageView) findViewById(R.id.selectedImage);
-            imageView.setImageBitmap(mBitmap);
+            imageView.setImageBitmap(rBitmap);
 
             // Add detection log.
-            Log.d("AnalyzeActivity", "Image: " + mBitmap.getWidth()
-                    + "x" + mBitmap.getHeight());
+            Log.d("AnalyzeActivity", "Image: " + rBitmap.getWidth()
+                    + "x" + rBitmap.getHeight());
 
             editText.setText("processing");
             try {
-                Bitmap cBitmap = scaleBitmapDown(mBitmap,1200);
-                callCloudVision(cBitmap);
+                callCloudVision(rBitmap);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -254,24 +253,5 @@ public class AnalyzeGColorActivity extends ActionBarActivity {
             message += "\n";
         }
         return message;
-    }
-    public Bitmap scaleBitmapDown(Bitmap bitmap, int maxDimension) {
-
-        int originalWidth = bitmap.getWidth();
-        int originalHeight = bitmap.getHeight();
-        int resizedWidth = maxDimension;
-        int resizedHeight = maxDimension;
-
-        if (originalHeight > originalWidth) {
-            resizedHeight = maxDimension;
-            resizedWidth = (int) (resizedHeight * (float) originalWidth / (float) originalHeight);
-        } else if (originalWidth > originalHeight) {
-            resizedWidth = maxDimension;
-            resizedHeight = (int) (resizedWidth * (float) originalHeight / (float) originalWidth);
-        } else if (originalHeight == originalWidth) {
-            resizedHeight = maxDimension;
-            resizedWidth = maxDimension;
-        }
-        return Bitmap.createScaledBitmap(bitmap, resizedWidth, resizedHeight, false);
     }
 }
