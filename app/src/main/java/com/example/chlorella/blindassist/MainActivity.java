@@ -40,16 +40,18 @@ import butterknife.OnClick;
 public class MainActivity extends Activity {
     @BindView(R.id.camera)
     CameraView camera;
-    @BindView(R.id.imageView)
+    @BindView(R.id.preview)
     ImageView imageView;
     @BindView(R.id.album)
     Button album;
     @BindView(R.id.function)
     TextView fText;
+    @BindView(R.id.capture)
+    Button capture;
 
     private MagicalPermissions magicalPermissions;
-    private MagicalCamera magicalCamera;
-    private static int function = 0;
+    public MagicalCamera magicalCamera;
+    private int function = 0;
     private String[] fArray;
 
     private int scale = 50;
@@ -68,16 +70,17 @@ public class MainActivity extends Activity {
         };
         magicalPermissions = new MagicalPermissions(this, permissions);
         magicalCamera = new MagicalCamera(this, scale, magicalPermissions);
+
         fArray = getResources().getStringArray(R.array.function_array);
         fText.setText(fArray[function]);
     }
 
-    public void setScale(int i){
-        if(i == 0){
+    public void setScale(int i) {
+        if (i == 0) {
             scale = 50;
-        }else if(i == 1){
+        } else if (i == 1) {
             scale = 75;
-        }else if(i == 2){
+        } else if (i == 2) {
             scale = 100;
         }
         ImageHelper.setScale(scale);
@@ -96,7 +99,7 @@ public class MainActivity extends Activity {
         fText.setText(fArray[function]);
         Context context = getApplicationContext();
         int duration = Toast.LENGTH_SHORT;
-        CharSequence text = fArray[function] + "/" + f;
+        CharSequence text = fArray[function];
 
         Toast toast = Toast.makeText(context, text, duration);
         toast.show();
@@ -126,7 +129,7 @@ public class MainActivity extends Activity {
                 }
             });
             builder.create().show();
-        }else if(id == R.id.scale){
+        } else if (id == R.id.scale) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle(R.string.menu_scale);
             builder.setItems(R.array.scale_array, new DialogInterface.OnClickListener() {
@@ -137,7 +140,7 @@ public class MainActivity extends Activity {
                 }
             });
             builder.create().show();
-        }else if(id == R.id.language){
+        } else if (id == R.id.language) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle(R.string.menu_language);
             builder.setItems(R.array.language_array, new DialogInterface.OnClickListener() {
@@ -167,7 +170,8 @@ public class MainActivity extends Activity {
                 Bitmap bitmap = BitmapFactory.decodeByteArray(jpeg, 0, jpeg.length);
 
                 imageView.setImageBitmap(bitmap);
-                switchIntent(bitmap);
+                ImageHelper.setImage(bitmap);
+                switchIntent();
             }
         });
         camera.captureImage();
@@ -184,17 +188,20 @@ public class MainActivity extends Activity {
         super.onPause();
     }
 
-    public void switchIntent(Bitmap bmap) {
-        ImageHelper.setImage(bmap);
-        if (function == 0) {
-            Intent intent = new Intent(MainActivity.this, DescribeActivity.class);
-            startActivity(intent);
-        } else if (function == 1) {
-            Intent intent = new Intent(MainActivity.this, AnalyzeColorActivity.class);
-            startActivity(intent);
-        } else if (function == 2) {
-            Intent intent = new Intent(MainActivity.this, RecognizeActivity.class);
-            startActivity(intent);
+    public void switchIntent() {
+        if(ImageHelper.getImage()!=null) {
+            if (function == 0) {
+                Intent intent = new Intent(MainActivity.this, DescribeActivity.class);
+                startActivity(intent);
+            } else if (function == 1) {
+                Intent intent = new Intent(MainActivity.this, AnalyzeColorActivity.class);
+                startActivity(intent);
+            } else if (function == 2) {
+                Intent intent = new Intent(MainActivity.this, RecognizeActivity.class);
+                startActivity(intent);
+            }
+        }else{
+            Toast.makeText(this,"Please choose a Image",Toast.LENGTH_SHORT);
         }
     }
 
@@ -218,7 +225,13 @@ public class MainActivity extends Activity {
             //set the photo in image view
             imageView.setImageBitmap(magicalCamera.getPhoto());
             Bitmap bitmap = magicalCamera.getPhoto();
-            switchIntent(bitmap);
+            ImageHelper.setImage(bitmap);
+            switchIntent();
         }
+    }
+
+    @OnClick(R.id.preview)
+    public void onViewClicked() {
+        switchIntent();
     }
 }

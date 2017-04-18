@@ -40,8 +40,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.chlorella.blindassist.R;
@@ -59,18 +59,17 @@ import java.io.IOException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class DescribeActivity extends Activity {
     @BindView(R.id.selectedImage)
     ImageView selectedImage;
-    @BindView(R.id.editTextResult)
-    EditText editText;
+    @BindView(R.id.textView)
+    TextView textView;
+
     // The image selected to detect.
     private Bitmap rBitmap;
     private Bitmap sBitmap;
-    // Flag to indicate which task is to be performed.
-    private static final int REQUEST_SELECT_IMAGE = 0;
-
 
     private VisionServiceClient client;
 
@@ -89,7 +88,7 @@ public class DescribeActivity extends Activity {
         if (rBitmap == null || sBitmap == null) {
             finish();
             return;
-        }else{
+        } else {
             // Show the image on screen.
             selectedImage.setImageBitmap(rBitmap);
 
@@ -123,12 +122,12 @@ public class DescribeActivity extends Activity {
     }
 
     public void doDescribe() {
-        editText.setText("Describing...");
+        textView.setText("Describing...");
 
         try {
             new doRequest().execute();
         } catch (Exception e) {
-            editText.setText("Error encountered. Exception is: " + e.toString());
+            textView.setText("Error encountered. Exception is: " + e.toString());
         }
     }
 
@@ -139,7 +138,7 @@ public class DescribeActivity extends Activity {
 
         // Put the image into an input stream for detection.
         ByteArrayOutputStream output = new ByteArrayOutputStream();
-        sBitmap.compress(Bitmap.CompressFormat.JPEG, 50, output);
+        sBitmap.compress(Bitmap.CompressFormat.JPEG, ImageHelper.getScale(), output);
         ByteArrayInputStream inputStream = new ByteArrayInputStream(output.toByteArray());
 
         AnalysisResult v = this.client.describe(inputStream, 1);
@@ -149,6 +148,11 @@ public class DescribeActivity extends Activity {
 
         return result;
     }
+
+    @OnClick(R.id.selectedImage)
+    public void onViewClicked() {
+    }
+
 
     private class doRequest extends AsyncTask<String, String, String> {
         // Store error message
@@ -173,26 +177,26 @@ public class DescribeActivity extends Activity {
             super.onPostExecute(data);
             // Display based on error existence
 
-            editText.setText("");
+            textView.setText("");
             if (e != null) {
-                editText.setText("Error: " + e.getMessage());
+                textView.setText("Error: " + e.getMessage());
                 this.e = null;
             } else {
                 //gson
                 Gson gson = new Gson();
                 AnalysisResult result = gson.fromJson(data, AnalysisResult.class);
 
-                editText.append("Image format: " + result.metadata.format + "\n");
-                editText.append("Image width: " + result.metadata.width + ", height:" + result.metadata.height + "\n");
-                editText.append("\n");
+                textView.append("Image format: " + result.metadata.format + "\n");
+                textView.append("Image width: " + result.metadata.width + ", height:" + result.metadata.height + "\n");
+                textView.append("\n");
                 CharSequence text = "";
 
                 //result.description.captions = .description text
                 for (Caption caption : result.description.captions) {
-                    editText.append("Caption: " + caption.text + ", confidence: " + caption.confidence + "\n");
+                    textView.append("Caption: " + caption.text + ", confidence: " + caption.confidence + "\n");
                     text = text + caption.text + "\n";
                 }
-                editText.append("\n");
+                textView.append("\n");
 
                 //Context
                 Context context = getApplicationContext();
@@ -202,13 +206,13 @@ public class DescribeActivity extends Activity {
                 toast.show();
 
                 for (String tag : result.description.tags) {
-                   editText.append("Tag: " + tag + "\n");
+                    textView.append("Tag: " + tag + "\n");
                 }
-                editText.append("\n");
+                textView.append("\n");
 
-//                editText.append("\n--- Raw Data ---\n\n");
-//                editText.append(data);
-//                editText.setSelection(0);
+//                textView.append("\n--- Raw Data ---\n\n");
+//                textView.append(data);
+//                textView.setSelection(0);
             }
         }
     }

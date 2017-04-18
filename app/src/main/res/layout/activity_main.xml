@@ -26,12 +26,6 @@
 
         </com.flurgle.camerakit.CameraView>
 
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="60dp"
-            android:layout_height="100dp"
-            android:layout_alignParentEnd="true" />
-
     </RelativeLayout>
 
     <TextView
@@ -43,6 +37,12 @@
         android:textAlignment="center"
         android:textColor="@color/common_google_signin_btn_text_dark_default"
         android:textSize="30sp" />
+
+    <ImageView
+        android:id="@+id/preview"
+        android:layout_width="60dp"
+        android:layout_height="100dp"
+        android:layout_alignParentEnd="true" />
 
     <FrameLayout
         android:layout_width="match_parent"

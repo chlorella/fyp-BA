@@ -5,11 +5,12 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.chlorella.blindassist.R;
@@ -30,17 +31,20 @@ import java.io.IOException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
+
+import static com.example.chlorella.blindassist.helper.ImageHelper.scaleBitmapDown;
 
 public class RecognizeActivity extends Activity {
 
     @BindView(R.id.selectedImage)
     ImageView selectedImage;
     @BindView(R.id.editTextResult)
-    EditText editText;
+    TextView editText;
 
     // The image selected to detect(for display).
     private Bitmap rBitmap;
-    // The image selected to detect(for display).
+    // The image selected to detect.
     private Bitmap sBitmap;
 
     //Vision Service Client provided form MS
@@ -58,11 +62,16 @@ public class RecognizeActivity extends Activity {
 
         rBitmap = ImageHelper.getImage();
         sBitmap = ImageHelper.getScaledImage();
+
+        DisplayMetrics metrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(metrics);
+
         if (rBitmap == null || sBitmap == null) {
             finish();
             return;
-        }else{
+        } else {
             // Show the image on screen.
+            rBitmap = scaleBitmapDown(rBitmap, metrics.heightPixels);
             selectedImage.setImageBitmap(rBitmap);
 
             // Add detection log.
@@ -109,7 +118,7 @@ public class RecognizeActivity extends Activity {
 
         // Put the image into an input stream for detection.
         ByteArrayOutputStream output = new ByteArrayOutputStream();
-        sBitmap.compress(Bitmap.CompressFormat.JPEG, 100, output);
+        sBitmap.compress(Bitmap.CompressFormat.JPEG, ImageHelper.getScale(), output);
         ByteArrayInputStream inputStream = new ByteArrayInputStream(output.toByteArray());
 
         OCR ocr;
@@ -120,6 +129,10 @@ public class RecognizeActivity extends Activity {
         Log.d("result", result);
 
         return result;
+    }
+
+    @OnClick(R.id.selectedImage)
+    public void onViewClicked() {
     }
 
     //do request

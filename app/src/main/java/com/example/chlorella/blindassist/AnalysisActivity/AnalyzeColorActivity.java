@@ -1,35 +1,3 @@
-//
-// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license.
-//
-// Microsoft Cognitive Services (formerly Project Oxford): https://www.microsoft.com/cognitive-services
-//
-// Microsoft Cognitive Services (formerly Project Oxford) GitHub:
-// https://github.com/Microsoft/Cognitive-Vision-Android
-//
-// Copyright (c) Microsoft Corporation
-// All rights reserved.
-//
-// MIT License:
-// Permission is hereby granted, free of charge, to any person obtaining
-// a copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to
-// permit persons to whom the Software is furnished to do so, subject to
-// the following conditions:
-//
-// The above copyright notice and this permission notice shall be
-// included in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED ""AS IS"", WITHOUT WARRANTY OF ANY KIND,
-// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-// LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-// OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-//
 package com.example.chlorella.blindassist.AnalysisActivity;
 
 import android.app.Activity;
@@ -41,8 +9,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.chlorella.blindassist.R;
@@ -60,15 +28,13 @@ import java.io.IOException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class AnalyzeColorActivity extends Activity {
-
-    // Flag to indicate which task is to be performed.
-    private static final int REQUEST_SELECT_IMAGE = 0;
     @BindView(R.id.selectedImage)
     ImageView selectedImage;
-    @BindView(R.id.editTextResult)
-    EditText editText;
+    @BindView(R.id.color_text)
+    TextView colorText;
 
     // The image selected to detect.
     private Bitmap rBitmap;
@@ -91,7 +57,7 @@ public class AnalyzeColorActivity extends Activity {
         if (rBitmap == null || sBitmap == null) {
             finish();
             return;
-        }else{
+        } else {
             // Show the image on screen.
             selectedImage.setImageBitmap(rBitmap);
 
@@ -99,7 +65,7 @@ public class AnalyzeColorActivity extends Activity {
             Log.d("AnalyzeActivity", "Image: " + rBitmap.getWidth()
                     + "x" + rBitmap.getHeight());
 
-            editText.setText("processing");
+            colorText.setText("processing");
             doAnalyze();
         }
     }
@@ -127,12 +93,12 @@ public class AnalyzeColorActivity extends Activity {
     }
 
     public void doAnalyze() {
-        editText.setText("Analyzing...");
+        colorText.setText("Analyzing...");
 
         try {
             new doRequest().execute();
         } catch (Exception e) {
-            editText.setText("Error encountered. Exception is: " + e.toString());
+            colorText.setText("Error encountered. Exception is: " + e.toString());
         }
     }
 
@@ -143,7 +109,7 @@ public class AnalyzeColorActivity extends Activity {
 
         // Put the image into an input stream for detection.
         ByteArrayOutputStream output = new ByteArrayOutputStream();
-        sBitmap.compress(Bitmap.CompressFormat.JPEG, 100, output);
+        sBitmap.compress(Bitmap.CompressFormat.JPEG, ImageHelper.getScale(), output);
         ByteArrayInputStream inputStream = new ByteArrayInputStream(output.toByteArray());
 
         AnalysisResult v = this.client.analyzeImage(inputStream, features, details);
@@ -152,6 +118,10 @@ public class AnalyzeColorActivity extends Activity {
         Log.d("result", result);
 
         return result;
+    }
+
+    @OnClick(R.id.selectedImage)
+    public void onViewClicked() {
     }
 
     private class doRequest extends AsyncTask<String, String, String> {
@@ -178,27 +148,27 @@ public class AnalyzeColorActivity extends Activity {
             // Display based on error existence
             ColorHelper col = new ColorHelper();
 
-            editText.setText("");
+            colorText.setText("");
             if (e != null) {
-                editText.setText("Error: " + e.getMessage());
+                colorText.setText("Error: " + e.getMessage());
                 this.e = null;
             } else {
                 Gson gson = new Gson();
                 AnalysisResult result = gson.fromJson(data, AnalysisResult.class);
 
-                editText.append(result.color.accentColor + "\n");
-                editText.append(col.matchingColorName(Color.parseColor("#" + result.color.accentColor)));
+                colorText.append(result.color.accentColor + "\n");
+                colorText.append(col.matchingColorName(Color.parseColor("#" + result.color.accentColor)));
                 Context context = getApplicationContext();
                 int duration = Toast.LENGTH_SHORT;
 
                 Toast toast = Toast.makeText(context, col.matchingColorName(Color.parseColor("#" + result.color.accentColor)), duration);
                 toast.show();
-//                mEditText.append("\nDominant Color Foreground :" + result.color.dominantColorForeground + "\n");
-//                mEditText.append("Dominant Color Background :" + result.color.dominantColorBackground + "\n");
+//                mcolorText.append("\nDominant Color Foreground :" + result.color.dominantColorForeground + "\n");
+//                mcolorText.append("Dominant Color Background :" + result.color.dominantColorBackground + "\n");
 
-//                mEditText.append("\n--- Raw Data ---\n\n");
-//                mEditText.append(data);
-//                mEditText.setSelection(0);
+//                mcolorText.append("\n--- Raw Data ---\n\n");
+//                mcolorText.append(data);
+//                mcolorText.setSelection(0);
             }
         }
     }
