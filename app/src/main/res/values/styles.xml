@@ -3,4 +3,6 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="android:style/Theme.Material.Light.DarkActionBar">
     </style>
+    <style name="AppThemeNoBar" parent="android:style/Theme.Material.Light.NoActionBar">
+    </style>
 </resources>

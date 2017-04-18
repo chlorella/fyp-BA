@@ -50,7 +50,7 @@ public class MainActivity extends Activity {
     Button capture;
 
     private MagicalPermissions magicalPermissions;
-    public MagicalCamera magicalCamera;
+    public static MagicalCamera magicalCamera;
     private int function = 0;
     private String[] fArray;
 
@@ -85,12 +85,11 @@ public class MainActivity extends Activity {
         }
         ImageHelper.setScale(scale);
         magicalCamera.setResizePhoto(scale);
-        Context context = getApplicationContext();
-        int duration = Toast.LENGTH_SHORT;
+
         String[] st = getResources().getStringArray(R.array.scale_array);
         CharSequence text = st[i];
 
-        Toast toast = Toast.makeText(context, text, duration);
+        Toast toast = Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT);
         toast.show();
     }
 
@@ -207,6 +206,7 @@ public class MainActivity extends Activity {
 
     @OnClick(R.id.album)
     public void selectImageInAlbum(View view) {
+        //Todo: Header
         magicalCamera.selectedPicture("img");
     }
 
@@ -227,6 +227,7 @@ public class MainActivity extends Activity {
             Bitmap bitmap = magicalCamera.getPhoto();
             ImageHelper.setImage(bitmap);
             switchIntent();
+            //
         }
     }
 
