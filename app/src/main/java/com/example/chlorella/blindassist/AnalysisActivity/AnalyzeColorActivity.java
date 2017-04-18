@@ -1,7 +1,10 @@
 package com.example.chlorella.blindassist.AnalysisActivity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.AsyncTask;
@@ -13,9 +16,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.chlorella.blindassist.Classes.ActionClass;
+import com.example.chlorella.blindassist.MainActivity;
 import com.example.chlorella.blindassist.R;
+import com.example.chlorella.blindassist.helper.ClipboardHelper;
 import com.example.chlorella.blindassist.helper.ColorHelper;
 import com.example.chlorella.blindassist.helper.ImageHelper;
+import com.example.chlorella.blindassist.helper.ShareHelper;
+import com.frosquivel.magicalcamera.MagicalCamera;
 import com.google.gson.Gson;
 import com.microsoft.projectoxford.vision.VisionServiceClient;
 import com.microsoft.projectoxford.vision.VisionServiceRestClient;
@@ -41,6 +49,7 @@ public class AnalyzeColorActivity extends Activity {
 
     private VisionServiceClient client;
     private Bitmap sBitmap;
+    private CharSequence textResult = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,6 +131,51 @@ public class AnalyzeColorActivity extends Activity {
 
     @OnClick(R.id.selectedImage)
     public void onViewClicked() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setItems(R.array.addition_array, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                // The 'which' argument contains the index position
+                // of the selected item
+                action(which);
+            }
+        });
+        builder.create().show();
+    }
+
+    private void action(int i){
+        if(i == ActionClass.REPEAT){
+            if(textResult != null){
+                Toast toast = Toast.makeText(getApplicationContext(), textResult, Toast.LENGTH_SHORT);
+                toast.show();
+            }else{
+                //Todo: String rHK
+                Toast toast = Toast.makeText(getApplicationContext(), "please wait for the result", Toast.LENGTH_SHORT);
+                toast.show();
+            }
+        }else if(i == ActionClass.COPYTOCLIPBOARD){
+            if(textResult != null){
+                ClipboardHelper.setClipboard(getApplicationContext(),textResult.toString());
+                Toast toast = Toast.makeText(getApplicationContext(), "Copied to clipboard", Toast.LENGTH_SHORT);
+                toast.show();
+            }else{
+                //Todo: String rHK
+                Toast toast = Toast.makeText(getApplicationContext(), "please wait for the result", Toast.LENGTH_SHORT);
+                toast.show();
+            }
+        }else if(i == ActionClass.SHAREMESSAGE){
+            if(textResult != null) {
+                Intent shareIntent = ShareHelper.share( rBitmap, textResult.toString());
+                startActivity(shareIntent);
+            }else{
+                //Todo: String rHK
+                Toast toast = Toast.makeText(getApplicationContext(), "please wait for the result", Toast.LENGTH_SHORT);
+                toast.show();
+            }
+        }else if(i == ActionClass.SAVEIMAGE){
+            Toast toast = Toast.makeText(getApplicationContext(),MainActivity.magicalCamera.savePhotoInMemoryDevice(rBitmap,"Reconizage_helper",MagicalCamera.JPEG,true),Toast.LENGTH_SHORT);
+            toast.show();
+
+        }
     }
 
     private class doRequest extends AsyncTask<String, String, String> {
@@ -146,7 +200,7 @@ public class AnalyzeColorActivity extends Activity {
         protected void onPostExecute(String data) {
             super.onPostExecute(data);
             // Display based on error existence
-            ColorHelper col = new ColorHelper();
+            ColorHelper col = new ColorHelper(getApplication());
 
             colorText.setText("");
             if (e != null) {
@@ -161,10 +215,11 @@ public class AnalyzeColorActivity extends Activity {
                 Context context = getApplicationContext();
                 int duration = Toast.LENGTH_SHORT;
 
-                Toast toast = Toast.makeText(context, col.matchingColorName(Color.parseColor("#" + result.color.accentColor)), duration);
+                textResult = col.matchingColorName(Color.parseColor("#" + result.color.accentColor));
+                Toast toast = Toast.makeText(context, textResult, duration);
                 toast.show();
-//                mcolorText.append("\nDominant Color Foreground :" + result.color.dominantColorForeground + "\n");
-//                mcolorText.append("Dominant Color Background :" + result.color.dominantColorBackground + "\n");
+                colorText.append("\nDominant Color Foreground :" + result.color.dominantColorForeground + "\n");
+                colorText.append("Dominant Color Background :" + result.color.dominantColorBackground + "\n");
 
 //                mcolorText.append("\n--- Raw Data ---\n\n");
 //                mcolorText.append(data);

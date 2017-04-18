@@ -1,7 +1,8 @@
 package com.example.chlorella.blindassist.AnalysisActivity;
 
 import android.app.Activity;
-import android.content.Context;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -13,8 +14,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.chlorella.blindassist.Classes.ActionClass;
+import com.example.chlorella.blindassist.MainActivity;
 import com.example.chlorella.blindassist.R;
+import com.example.chlorella.blindassist.helper.ClipboardHelper;
 import com.example.chlorella.blindassist.helper.ImageHelper;
+import com.example.chlorella.blindassist.helper.ShareHelper;
+import com.frosquivel.magicalcamera.MagicalCamera;
 import com.google.gson.Gson;
 import com.microsoft.projectoxford.vision.VisionServiceClient;
 import com.microsoft.projectoxford.vision.VisionServiceRestClient;
@@ -50,6 +56,8 @@ public class RecognizeActivity extends Activity {
     //Vision Service Client provided form MS
     private VisionServiceClient client;
 
+
+    private CharSequence textResult;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,6 +70,7 @@ public class RecognizeActivity extends Activity {
 
         rBitmap = ImageHelper.getImage();
         sBitmap = ImageHelper.getScaledImage();
+        textResult = null;
 
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
@@ -133,7 +142,45 @@ public class RecognizeActivity extends Activity {
 
     @OnClick(R.id.selectedImage)
     public void onViewClicked() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setItems(R.array.addition_array, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                // The 'which' argument contains the index position
+                // of the selected item
+                action(which);
+            }
+        });
+        builder.create().show();
     }
+
+    private void action(int i){
+        if(i == ActionClass.REPEAT){
+            if(textResult != null){
+                Toast toast = Toast.makeText(getApplicationContext(), textResult, Toast.LENGTH_SHORT);
+                toast.show();
+            }else{
+                //Todo: String rHK
+                Toast toast = Toast.makeText(getApplicationContext(), "please wait for the result", Toast.LENGTH_SHORT);
+                toast.show();
+            }
+        }else if(i == ActionClass.COPYTOCLIPBOARD){
+            if(textResult != null){
+                ClipboardHelper.setClipboard(getApplicationContext(),textResult.toString());
+                Toast toast = Toast.makeText(getApplicationContext(), "Copied to clipboard", Toast.LENGTH_SHORT);
+                toast.show();
+            }else{
+                //Todo: String rHK
+                Toast toast = Toast.makeText(getApplicationContext(), "please wait for the result", Toast.LENGTH_SHORT);
+                toast.show();
+            }
+        }else if(i == ActionClass.SHAREMESSAGE){
+            ShareHelper.share(rBitmap,textResult.toString());
+        }else if(i == ActionClass.SAVEIMAGE){
+            Toast toast = Toast.makeText(getApplicationContext(), MainActivity.magicalCamera.savePhotoInMemoryDevice(rBitmap,"test", MagicalCamera.JPEG, true),Toast.LENGTH_SHORT);
+            toast.show();
+        }
+    }
+
 
     //do request
     private class doRequest extends AsyncTask<String, String, String> {
@@ -150,7 +197,6 @@ public class RecognizeActivity extends Activity {
             } catch (Exception e) {
                 this.e = e;    // Store error
             }
-
             return null;
         }
 
@@ -177,12 +223,7 @@ public class RecognizeActivity extends Activity {
                     result += "\n\n";
                 }
 
-                //toast
-                Context context = getApplicationContext();
-                int duration = Toast.LENGTH_SHORT;
-                CharSequence text = result;
-
-                Toast toast = Toast.makeText(context, text, duration);
+                Toast toast = Toast.makeText(getApplicationContext(), textResult, Toast.LENGTH_SHORT);
                 toast.show();
 
                 editText.setText(result);

@@ -33,7 +33,9 @@
 package com.example.chlorella.blindassist.AnalysisActivity;
 
 import android.app.Activity;
-import android.content.Context;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -44,8 +46,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.chlorella.blindassist.Classes.ActionClass;
+import com.example.chlorella.blindassist.MainActivity;
 import com.example.chlorella.blindassist.R;
+import com.example.chlorella.blindassist.helper.ClipboardHelper;
 import com.example.chlorella.blindassist.helper.ImageHelper;
+import com.example.chlorella.blindassist.helper.ShareHelper;
+import com.frosquivel.magicalcamera.MagicalCamera;
 import com.google.gson.Gson;
 import com.microsoft.projectoxford.vision.VisionServiceClient;
 import com.microsoft.projectoxford.vision.VisionServiceRestClient;
@@ -73,9 +80,12 @@ public class DescribeActivity extends Activity {
 
     private VisionServiceClient client;
 
+    private CharSequence textResult;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        textResult = null;
         setContentView(R.layout.activity_describe);
         ButterKnife.bind(this);
 
@@ -122,11 +132,13 @@ public class DescribeActivity extends Activity {
     }
 
     public void doDescribe() {
+        //todo: toast
         textView.setText("Describing...");
 
         try {
             new doRequest().execute();
         } catch (Exception e) {
+            //todo: toast
             textView.setText("Error encountered. Exception is: " + e.toString());
         }
     }
@@ -151,6 +163,50 @@ public class DescribeActivity extends Activity {
 
     @OnClick(R.id.selectedImage)
     public void onViewClicked() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setItems(R.array.addition_array, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                // The 'which' argument contains the index position
+                // of the selected item
+                action(which);
+            }
+        });
+        builder.create().show();
+    }
+
+    private void action(int i){
+        if(i == ActionClass.REPEAT){
+            if(textResult != null){
+                Toast toast = Toast.makeText(getApplicationContext(), textResult, Toast.LENGTH_SHORT);
+                toast.show();
+            }else{
+                //Todo: String rHK
+                Toast toast = Toast.makeText(getApplicationContext(), "please wait for the result", Toast.LENGTH_SHORT);
+                toast.show();
+            }
+        }else if(i == ActionClass.COPYTOCLIPBOARD){
+            if(textResult != null){
+                ClipboardHelper.setClipboard(getApplicationContext(),textResult.toString());
+                Toast toast = Toast.makeText(getApplicationContext(), "Copied to clipboard", Toast.LENGTH_SHORT);
+                toast.show();
+            }else{
+                //Todo: String rHK
+                Toast toast = Toast.makeText(getApplicationContext(), "please wait for the result", Toast.LENGTH_SHORT);
+                toast.show();
+            }
+        }else if(i == ActionClass.SHAREMESSAGE){
+            if(textResult != null) {
+                Intent share = ShareHelper.share(rBitmap, textResult.toString());
+                startActivity(share);
+            }else{
+                //Todo: String rHK
+                Toast toast = Toast.makeText(getApplicationContext(), "please wait for the result", Toast.LENGTH_SHORT);
+                toast.show();
+            }
+        }else if(i == ActionClass.SAVEIMAGE){
+            Toast toast = Toast.makeText(getApplicationContext(), MainActivity.magicalCamera.savePhotoInMemoryDevice(rBitmap,"test", MagicalCamera.JPEG, true),Toast.LENGTH_SHORT);
+            toast.show();
+        }
     }
 
 
@@ -189,20 +245,18 @@ public class DescribeActivity extends Activity {
                 textView.append("Image format: " + result.metadata.format + "\n");
                 textView.append("Image width: " + result.metadata.width + ", height:" + result.metadata.height + "\n");
                 textView.append("\n");
-                CharSequence text = "";
+                textResult = "";
 
                 //result.description.captions = .description text
                 for (Caption caption : result.description.captions) {
                     textView.append("Caption: " + caption.text + ", confidence: " + caption.confidence + "\n");
-                    text = text + caption.text + "\n";
+                    textResult = textResult + caption.text + "\n";
                 }
                 textView.append("\n");
 
                 //Context
-                Context context = getApplicationContext();
-                int duration = Toast.LENGTH_SHORT;
 
-                Toast toast = Toast.makeText(context, text, duration);
+                Toast toast = Toast.makeText(getApplicationContext(), textResult, Toast.LENGTH_SHORT);
                 toast.show();
 
                 for (String tag : result.description.tags) {
