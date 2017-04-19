@@ -20,7 +20,7 @@
             app:ckCropOutput="true"
             app:ckFacing="back"
             app:ckFlash="auto"
-            app:ckFocus="tapWithMarker"
+            app:ckFocus="continuous"
             app:ckJpegQuality="100"
             app:ckMethod="standard">
 
