@@ -10,4 +10,6 @@
         android:orderInCategory="100" app:showAsAction="never" />
     <item android:id="@+id/language" android:title="@string/menu_language"
         android:orderInCategory="100" app:showAsAction="never" />
+    <item android:id="@+id/facing" android:title="@string/menu_facing"
+        android:orderInCategory="100" app:showAsAction="never" />
 </menu>

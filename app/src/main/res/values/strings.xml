@@ -12,6 +12,8 @@
 
     <string name="btn_capture">Recognize</string>
     <string name="btn_album">Album</string>
+    <string name="btn_flash_on">Flash ON</string>
+    <string name="btn_flash_off">Flash OFF</string>
 
     <string name="menu_function">Function</string>
     <string-array
@@ -37,7 +39,29 @@
         <item>Chinese</item>
     </string-array>
 
-    <string-array name="addition_array">
+    <string name="menu_facing">Facing</string>
+    <string-array name="facing_array">
+        <item>Facing Back</item>
+        <item>Facing Front</item>
+    </string-array>
+
+    <string-array name="addition_array_d">
+        <item>Repeat</item>
+        <item>Copy</item>
+        <item>Share</item>
+        <item>Save Image</item>
+        <item>Translate</item>
+        <item>Face Recognize</item>
+    </string-array>
+
+    <string-array name="addition_array_c">
+        <item>Repeat</item>
+        <item>Copy</item>
+        <item>Share</item>
+        <item>Save Image</item>
+    </string-array>
+
+    <string-array name="addition_array_r">
         <item>Repeat</item>
         <item>Copy</item>
         <item>Share</item>
@@ -45,8 +69,6 @@
     </string-array>
 
 
-
-    ENG
     <string name="black">Black</string>
     <string name="navy_blue">Navy Blue</string>
     <string name="dark_blue">Dark Blue</string>

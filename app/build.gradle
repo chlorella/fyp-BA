@@ -5,7 +5,7 @@ android {
     buildToolsVersion "25.0.2"
     defaultConfig {
         applicationId "com.example.chlorella.blindassist"
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
@@ -40,5 +40,6 @@ dependencies {
 //    compile 'com.google.http-client:google-http-client-gson:1.20.0'
 
 //    compile 'com.google.apis:google-api-services-vision:v1-rev2-1.21.0'
-    compile 'com.android.support:design:25.2.0'
+//    compile 'com.google.apis:google-api-services-translate:v2-rev49-1.22.0'
+//    compile 'com.android.support:design:25.2.0'
 }

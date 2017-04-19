@@ -37,21 +37,20 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.chlorella.blindassist.Classes.ActionClass;
-import com.example.chlorella.blindassist.MainActivity;
 import com.example.chlorella.blindassist.R;
-import com.example.chlorella.blindassist.helper.ClipboardHelper;
-import com.example.chlorella.blindassist.helper.ImageHelper;
-import com.example.chlorella.blindassist.helper.ShareHelper;
+import com.example.chlorella.blindassist.Helper.ClipboardHelper;
+import com.example.chlorella.blindassist.Helper.ImageHelper;
+import com.example.chlorella.blindassist.Helper.ShareHelper;
+import com.example.chlorella.blindassist.Helper.TranslateHelper;
 import com.frosquivel.magicalcamera.MagicalCamera;
 import com.google.gson.Gson;
 import com.microsoft.projectoxford.vision.VisionServiceClient;
@@ -63,10 +62,13 @@ import com.microsoft.projectoxford.vision.rest.VisionServiceException;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.example.chlorella.blindassist.MainActivity.magicalCamera;
 
 public class DescribeActivity extends Activity {
     @BindView(R.id.selectedImage)
@@ -109,28 +111,6 @@ public class DescribeActivity extends Activity {
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_describe, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
     public void doDescribe() {
         //todo: toast
         textView.setText("Describing...");
@@ -164,7 +144,7 @@ public class DescribeActivity extends Activity {
     @OnClick(R.id.selectedImage)
     public void onViewClicked() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setItems(R.array.addition_array, new DialogInterface.OnClickListener() {
+        builder.setItems(R.array.addition_array_d, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 // The 'which' argument contains the index position
                 // of the selected item
@@ -187,6 +167,7 @@ public class DescribeActivity extends Activity {
         }else if(i == ActionClass.COPYTOCLIPBOARD){
             if(textResult != null){
                 ClipboardHelper.setClipboard(getApplicationContext(),textResult.toString());
+                //Todo: String rHK
                 Toast toast = Toast.makeText(getApplicationContext(), "Copied to clipboard", Toast.LENGTH_SHORT);
                 toast.show();
             }else{
@@ -204,11 +185,55 @@ public class DescribeActivity extends Activity {
                 toast.show();
             }
         }else if(i == ActionClass.SAVEIMAGE){
-            Toast toast = Toast.makeText(getApplicationContext(), MainActivity.magicalCamera.savePhotoInMemoryDevice(rBitmap,"test", MagicalCamera.JPEG, true),Toast.LENGTH_SHORT);
+            //Todo: Dialog change name
+            Toast toast = Toast.makeText(getApplicationContext(), magicalCamera.savePhotoInMemoryDevice(rBitmap,"test","rHelper",MagicalCamera.JPEG,true),Toast.LENGTH_SHORT);
             toast.show();
+        }else if(i == ActionClass.FACERANGONIZATION){
+            //Todo: Dialog change name
+            FaceDetector();
+        }else if(i == ActionClass.TRANSLATION){
+            //Todo: Dialog change name
+            if( Locale.getDefault().toString() == "zh-hk" && textResult != null) {
+                Intent intent = TranslateHelper.callGoogleTranslateApps(textResult.toString(), "zh-hk");
+                startActivity(intent);
+            }else if(textResult != null){
+                Toast toast = Toast.makeText(getApplicationContext(), "please wait for the result", Toast.LENGTH_SHORT);
+                toast.show();
+            }
         }
     }
 
+    private void FaceDetector() {
+        if (magicalCamera != null) {
+            magicalCamera.setPhoto(rBitmap);
+            if (magicalCamera.getPhoto() != null) {
+                //this comment line is the strok 5 and color red for default
+                //imageView.setImageBitmap(magicalCamera.faceDetector());
+                //you can the posibility of send the square color and the respective stroke
+                selectedImage.setImageBitmap(magicalCamera.faceDetector(10, Color.BLUE));
+                //todo: landmark
+//                List<Landmark> listMark = magicalCamera.getFaceRecognitionInformation().getListLandMarkPhoto();
+//                if(listMark.isEmpty()){
+//                    CharSequence text = "There are " + listMark.size() + " face";
+//                    Toast toast = Toast.makeText(getApplicationContext(),text,Toast.LENGTH_SHORT);
+//                    toast.show();
+//                }else{
+//                    Toast toast = Toast.makeText(getApplicationContext(),"There are no human face",Toast.LENGTH_SHORT);
+//                    toast.show();
+//                }
+            } else {
+                //Todo: String
+                Toast.makeText(DescribeActivity.this,
+                        "Your image is null, please select or take one",
+                        Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            //Todo: String
+            Toast.makeText(DescribeActivity.this,
+                    "Please initialized magical camera, maybe in static context for use in all activity",
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
 
     private class doRequest extends AsyncTask<String, String, String> {
         // Store error message
@@ -255,7 +280,6 @@ public class DescribeActivity extends Activity {
                 textView.append("\n");
 
                 //Context
-
                 Toast toast = Toast.makeText(getApplicationContext(), textResult, Toast.LENGTH_SHORT);
                 toast.show();
 

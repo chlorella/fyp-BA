@@ -10,8 +10,6 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,10 +17,10 @@ import android.widget.Toast;
 import com.example.chlorella.blindassist.Classes.ActionClass;
 import com.example.chlorella.blindassist.MainActivity;
 import com.example.chlorella.blindassist.R;
-import com.example.chlorella.blindassist.helper.ClipboardHelper;
-import com.example.chlorella.blindassist.helper.ColorHelper;
-import com.example.chlorella.blindassist.helper.ImageHelper;
-import com.example.chlorella.blindassist.helper.ShareHelper;
+import com.example.chlorella.blindassist.Helper.ClipboardHelper;
+import com.example.chlorella.blindassist.Helper.ColorHelper;
+import com.example.chlorella.blindassist.Helper.ImageHelper;
+import com.example.chlorella.blindassist.Helper.ShareHelper;
 import com.frosquivel.magicalcamera.MagicalCamera;
 import com.google.gson.Gson;
 import com.microsoft.projectoxford.vision.VisionServiceClient;
@@ -79,28 +77,6 @@ public class AnalyzeColorActivity extends Activity {
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_analyze, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
     public void doAnalyze() {
         colorText.setText("Analyzing...");
 
@@ -132,7 +108,7 @@ public class AnalyzeColorActivity extends Activity {
     @OnClick(R.id.selectedImage)
     public void onViewClicked() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setItems(R.array.addition_array, new DialogInterface.OnClickListener() {
+        builder.setItems(R.array.addition_array_c, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 // The 'which' argument contains the index position
                 // of the selected item
@@ -172,9 +148,8 @@ public class AnalyzeColorActivity extends Activity {
                 toast.show();
             }
         }else if(i == ActionClass.SAVEIMAGE){
-            Toast toast = Toast.makeText(getApplicationContext(),MainActivity.magicalCamera.savePhotoInMemoryDevice(rBitmap,"Reconizage_helper",MagicalCamera.JPEG,true),Toast.LENGTH_SHORT);
+            Toast toast = Toast.makeText(getApplicationContext(),MainActivity.magicalCamera.savePhotoInMemoryDevice(rBitmap,"rHelper",MagicalCamera.JPEG,true),Toast.LENGTH_SHORT);
             toast.show();
-
         }
     }
 

@@ -16,11 +16,14 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.example.chlorella.blindassist.AnalysisActivity.AnalyzeColorActivity;
 import com.example.chlorella.blindassist.AnalysisActivity.DescribeActivity;
 import com.example.chlorella.blindassist.AnalysisActivity.RecognizeActivity;
-import com.example.chlorella.blindassist.helper.ImageHelper;
+import com.example.chlorella.blindassist.Classes.FunctionClass;
+import com.example.chlorella.blindassist.Helper.ImageHelper;
+import com.flurgle.camerakit.CameraKit;
 import com.flurgle.camerakit.CameraListener;
 import com.flurgle.camerakit.CameraView;
 import com.frosquivel.magicalcamera.MagicalCamera;
@@ -48,12 +51,13 @@ public class MainActivity extends Activity {
     TextView fText;
     @BindView(R.id.capture)
     Button capture;
+    @BindView(R.id.flash)
+    ToggleButton flash;
+
 
     private MagicalPermissions magicalPermissions;
     public static MagicalCamera magicalCamera;
     private int function = 0;
-    private String[] fArray;
-
     private int scale = 50;
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,8 +75,7 @@ public class MainActivity extends Activity {
         magicalPermissions = new MagicalPermissions(this, permissions);
         magicalCamera = new MagicalCamera(this, scale, magicalPermissions);
 
-        fArray = getResources().getStringArray(R.array.function_array);
-        fText.setText(fArray[function]);
+        fText.setText(getResources().getStringArray(R.array.function_array)[function]);
     }
 
     public void setScale(int i) {
@@ -95,14 +98,17 @@ public class MainActivity extends Activity {
 
     public void setFunction(int f) {
         function = f;
-        fText.setText(fArray[function]);
-        Context context = getApplicationContext();
-        int duration = Toast.LENGTH_SHORT;
-        CharSequence text = fArray[function];
+        fText.setText(getResources().getStringArray(R.array.function_array)[function]);
+        if (function == FunctionClass.OCR) {
+            camera.setCropOutput(false);
+        } else {
+            camera.setCropOutput(true);
+        }
 
-        Toast toast = Toast.makeText(context, text, duration);
+        Toast toast = Toast.makeText(getApplicationContext(), getResources().getStringArray(R.array.function_array)[function], Toast.LENGTH_SHORT);
         toast.show();
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -155,6 +161,25 @@ public class MainActivity extends Activity {
                 }
             });
             builder.create().show();
+        } else if (id == R.id.facing) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(R.string.menu_facing);
+            builder.setItems(R.array.facing_array, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    // The 'which' argument contains the index position
+                    // of the selected item
+                    if (which == 0) {
+                        camera.setFacing(CameraKit.Constants.FACING_BACK);
+                        Toast toast = Toast.makeText(getApplicationContext(), getResources().getStringArray(R.array.facing_array)[0], Toast.LENGTH_SHORT);
+                        toast.show();
+                    } else {
+                        camera.setFacing(CameraKit.Constants.FACING_FRONT);
+                        Toast toast = Toast.makeText(getApplicationContext(), getResources().getStringArray(R.array.facing_array)[1], Toast.LENGTH_SHORT);
+                        toast.show();
+                    }
+                }
+            });
+            builder.create().show();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -188,26 +213,26 @@ public class MainActivity extends Activity {
     }
 
     public void switchIntent() {
-        if(ImageHelper.getImage()!=null) {
-            if (function == 0) {
+        if (ImageHelper.getImage() != null) {
+            if (function == FunctionClass.DESCRIBE) {
                 Intent intent = new Intent(MainActivity.this, DescribeActivity.class);
                 startActivity(intent);
-            } else if (function == 1) {
+            } else if (function == FunctionClass.COLOR) {
                 Intent intent = new Intent(MainActivity.this, AnalyzeColorActivity.class);
                 startActivity(intent);
-            } else if (function == 2) {
+            } else if (function == FunctionClass.OCR) {
                 Intent intent = new Intent(MainActivity.this, RecognizeActivity.class);
                 startActivity(intent);
             }
-        }else{
-            Toast.makeText(this,"Please choose a Image",Toast.LENGTH_SHORT);
+        } else {
+            Toast.makeText(this, "Please choose a Image", Toast.LENGTH_SHORT);
         }
     }
 
     @OnClick(R.id.album)
     public void selectImageInAlbum(View view) {
         //Todo: Header
-        magicalCamera.selectedPicture("img");
+        magicalCamera.selectedPicture("Choose a Image");
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -227,12 +252,24 @@ public class MainActivity extends Activity {
             Bitmap bitmap = magicalCamera.getPhoto();
             ImageHelper.setImage(bitmap);
             switchIntent();
-            //
         }
     }
 
     @OnClick(R.id.preview)
     public void onViewClicked() {
         switchIntent();
+    }
+
+    @OnClick(R.id.flash)
+    public void onFlashClicked() {
+        if (flash.isChecked()) {
+            camera.setFlash(CameraKit.Constants.FLASH_ON);
+//            Toast t = Toast.makeText(this, flash.getTextOn(), Toast.LENGTH_SHORT);
+//            t.show();
+        } else {
+            camera.setFlash(CameraKit.Constants.FLASH_AUTO);
+//            Toast t = Toast.makeText(this, flash.getTextOff(), Toast.LENGTH_SHORT);
+//            t.show();
+        }
     }
 }
