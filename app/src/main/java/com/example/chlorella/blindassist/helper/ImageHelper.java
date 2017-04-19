@@ -30,7 +30,7 @@
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
-package com.example.chlorella.blindassist.helper;
+package com.example.chlorella.blindassist.Helper;
 
 import android.graphics.Bitmap;
 import android.support.annotation.Nullable;

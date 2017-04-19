@@ -65,7 +65,8 @@
                 android:layout_weight="1"
                 android:checked="false"
                 android:textOff="@string/btn_flash_off"
-                android:textOn="@string/btn_flash_on" />
+                android:textOn="@string/btn_flash_on"
+                android:visibility="gone" />
 
             <Button
                 android:id="@+id/capture"

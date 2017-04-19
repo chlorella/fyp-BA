@@ -34,6 +34,7 @@ package com.example.chlorella.blindassist.AnalysisActivity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -46,12 +47,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.chlorella.blindassist.Classes.ActionClass;
-import com.example.chlorella.blindassist.R;
 import com.example.chlorella.blindassist.Helper.ClipboardHelper;
 import com.example.chlorella.blindassist.Helper.ImageHelper;
 import com.example.chlorella.blindassist.Helper.ShareHelper;
 import com.example.chlorella.blindassist.Helper.TranslateHelper;
+import com.example.chlorella.blindassist.R;
 import com.frosquivel.magicalcamera.MagicalCamera;
+import com.google.android.gms.vision.face.Landmark;
 import com.google.gson.Gson;
 import com.microsoft.projectoxford.vision.VisionServiceClient;
 import com.microsoft.projectoxford.vision.VisionServiceRestClient;
@@ -62,6 +64,7 @@ import com.microsoft.projectoxford.vision.rest.VisionServiceException;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.List;
 import java.util.Locale;
 
 import butterknife.BindView;
@@ -193,10 +196,19 @@ public class DescribeActivity extends Activity {
             FaceDetector();
         }else if(i == ActionClass.TRANSLATION){
             //Todo: Dialog change name
-            if( Locale.getDefault().toString() == "zh-hk" && textResult != null) {
-                Intent intent = TranslateHelper.callGoogleTranslateApps(textResult.toString(), "zh-hk");
-                startActivity(intent);
+            if( Locale.getDefault().toString() != "en" && textResult != null) {
+                try {
+                    Intent intent = TranslateHelper.callGoogleTranslateApps(textResult.toString(), Locale.getDefault().toString());
+                    startActivity(intent);
+                }catch (ActivityNotFoundException e) {
+                    // TODO Auto-generated catch block
+                    Toast.makeText(getApplication(), "Sorry, No Google Translation Installed",
+                            Toast.LENGTH_SHORT).show();
+                }
             }else if(textResult != null){
+                Toast toast = Toast.makeText(getApplicationContext(), "Translation is for English to Chinese", Toast.LENGTH_SHORT);
+                toast.show();
+            }else if(textResult == null){
                 Toast toast = Toast.makeText(getApplicationContext(), "please wait for the result", Toast.LENGTH_SHORT);
                 toast.show();
             }
@@ -212,15 +224,22 @@ public class DescribeActivity extends Activity {
                 //you can the posibility of send the square color and the respective stroke
                 selectedImage.setImageBitmap(magicalCamera.faceDetector(10, Color.BLUE));
                 //todo: landmark
-//                List<Landmark> listMark = magicalCamera.getFaceRecognitionInformation().getListLandMarkPhoto();
-//                if(listMark.isEmpty()){
-//                    CharSequence text = "There are " + listMark.size() + " face";
-//                    Toast toast = Toast.makeText(getApplicationContext(),text,Toast.LENGTH_SHORT);
-//                    toast.show();
-//                }else{
-//                    Toast toast = Toast.makeText(getApplicationContext(),"There are no human face",Toast.LENGTH_SHORT);
-//                    toast.show();
-//                }
+                List<Landmark> listMark = magicalCamera.getFaceRecognitionInformation().listLandMarkPhoto;
+
+                int count = 0;
+                if(listMark != null) {
+                    for (Landmark landmark : listMark) {
+                        count++;
+                    }
+                }
+                if(count != 0){
+                    CharSequence text = "There are " + count + " face";
+                    Toast toast = Toast.makeText(getApplicationContext(),text,Toast.LENGTH_SHORT);
+                    toast.show();
+                }else{
+                    Toast toast = Toast.makeText(getApplicationContext(),"There are no human face",Toast.LENGTH_SHORT);
+                    toast.show();
+                }
             } else {
                 //Todo: String
                 Toast.makeText(DescribeActivity.this,

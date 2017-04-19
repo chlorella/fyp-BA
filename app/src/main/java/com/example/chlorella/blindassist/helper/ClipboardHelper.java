@@ -1,4 +1,4 @@
-package com.example.chlorella.blindassist.helper;
+package com.example.chlorella.blindassist.Helper;
 
 import android.content.Context;
 

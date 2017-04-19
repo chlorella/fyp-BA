@@ -8,9 +8,10 @@ import android.content.Intent;
  */
 
 public class TranslateHelper {
-    public static Intent callGoogleTranslateApps(String word,String toLang) {
+    public static Intent callGoogleTranslateApps(String word, String toLang) {
         Intent i = new Intent();
         i.setAction(Intent.ACTION_SEND);
+        i.putExtra(Intent.EXTRA_TEXT, word);
         i.putExtra("key_text_input", word);
         i.putExtra("key_text_output", "");
         i.putExtra("key_language_from", "en");

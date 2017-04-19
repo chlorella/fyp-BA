@@ -213,6 +213,9 @@ public class MainActivity extends Activity {
     }
 
     public void switchIntent() {
+        if(magicalCamera.getPhoto()!= null){
+            ImageHelper.setImage(magicalCamera.getPhoto());
+        }
         if (ImageHelper.getImage() != null) {
             if (function == FunctionClass.DESCRIBE) {
                 Intent intent = new Intent(MainActivity.this, DescribeActivity.class);
@@ -225,7 +228,8 @@ public class MainActivity extends Activity {
                 startActivity(intent);
             }
         } else {
-            Toast.makeText(this, "Please choose a Image", Toast.LENGTH_SHORT);
+            Toast t =Toast.makeText(this, "Please choose a Image", Toast.LENGTH_SHORT);
+            t.show();
         }
     }
 
@@ -264,12 +268,12 @@ public class MainActivity extends Activity {
     public void onFlashClicked() {
         if (flash.isChecked()) {
             camera.setFlash(CameraKit.Constants.FLASH_ON);
-//            Toast t = Toast.makeText(this, flash.getTextOn(), Toast.LENGTH_SHORT);
-//            t.show();
+            Toast t = Toast.makeText(this, flash.getTextOn(), Toast.LENGTH_SHORT);
+            t.show();
         } else {
             camera.setFlash(CameraKit.Constants.FLASH_AUTO);
-//            Toast t = Toast.makeText(this, flash.getTextOff(), Toast.LENGTH_SHORT);
-//            t.show();
+            Toast t = Toast.makeText(this, flash.getTextOff(), Toast.LENGTH_SHORT);
+            t.show();
         }
     }
 }
