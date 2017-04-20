@@ -56,6 +56,7 @@
 
     <string-array name="addition_array_c">
         <item>Repeat</item>
+        <item>Repeat in English</item>
         <item>Copy</item>
         <item>Share</item>
         <item>Save Image</item>

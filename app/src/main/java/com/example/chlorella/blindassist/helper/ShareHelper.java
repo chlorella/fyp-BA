@@ -27,6 +27,7 @@ public class ShareHelper {
         share.putExtra(Intent.EXTRA_TEXT, text);
 //        share.putExtra(Intent.EXTRA_STREAM,
 //                Uri.parse("file:///sdcard/temporary_file.jpg"));
+
         return share;
     }
 }

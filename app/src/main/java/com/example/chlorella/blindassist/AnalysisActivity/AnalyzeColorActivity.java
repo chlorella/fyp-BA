@@ -9,18 +9,19 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.chlorella.blindassist.Classes.ActionClass;
-import com.example.chlorella.blindassist.MainActivity;
-import com.example.chlorella.blindassist.R;
 import com.example.chlorella.blindassist.Helper.ClipboardHelper;
 import com.example.chlorella.blindassist.Helper.ColorHelper;
 import com.example.chlorella.blindassist.Helper.ImageHelper;
 import com.example.chlorella.blindassist.Helper.ShareHelper;
+import com.example.chlorella.blindassist.MainActivity;
+import com.example.chlorella.blindassist.R;
 import com.frosquivel.magicalcamera.MagicalCamera;
 import com.google.gson.Gson;
 import com.microsoft.projectoxford.vision.VisionServiceClient;
@@ -31,6 +32,7 @@ import com.microsoft.projectoxford.vision.rest.VisionServiceException;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -48,6 +50,11 @@ public class AnalyzeColorActivity extends Activity {
     private VisionServiceClient client;
     private Bitmap sBitmap;
     private CharSequence textResult = null;
+
+
+    ColorHelper col = new ColorHelper(getApplication());
+    private Integer colorNameID = null;
+    private TextToSpeech t1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +82,15 @@ public class AnalyzeColorActivity extends Activity {
             colorText.setText("processing");
             doAnalyze();
         }
+
+        t1=new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if(status != TextToSpeech.ERROR) {
+                    t1.setLanguage(Locale.ENGLISH);
+                }
+            }
+        });
     }
 
     public void doAnalyze() {
@@ -128,7 +144,7 @@ public class AnalyzeColorActivity extends Activity {
                 Toast toast = Toast.makeText(getApplicationContext(), "please wait for the result", Toast.LENGTH_SHORT);
                 toast.show();
             }
-        }else if(i == ActionClass.COPYTOCLIPBOARD){
+        }else if(i == ActionClass.COPYTOCLIPBOARD+1){
             if(textResult != null){
                 ClipboardHelper.setClipboard(getApplicationContext(),textResult.toString());
                 Toast toast = Toast.makeText(getApplicationContext(), "Copied to clipboard", Toast.LENGTH_SHORT);
@@ -138,7 +154,7 @@ public class AnalyzeColorActivity extends Activity {
                 Toast toast = Toast.makeText(getApplicationContext(), "please wait for the result", Toast.LENGTH_SHORT);
                 toast.show();
             }
-        }else if(i == ActionClass.SHAREMESSAGE){
+        }else if(i == ActionClass.SHAREMESSAGE+1){
             if(textResult != null) {
                 Intent shareIntent = ShareHelper.share( rBitmap, textResult.toString());
                 startActivity(shareIntent);
@@ -147,9 +163,13 @@ public class AnalyzeColorActivity extends Activity {
                 Toast toast = Toast.makeText(getApplicationContext(), "please wait for the result", Toast.LENGTH_SHORT);
                 toast.show();
             }
-        }else if(i == ActionClass.SAVEIMAGE){
+        }else if(i == ActionClass.SAVEIMAGE+1){
             Toast toast = Toast.makeText(getApplicationContext(),MainActivity.magicalCamera.savePhotoInMemoryDevice(rBitmap,"rHelper",MagicalCamera.JPEG,true),Toast.LENGTH_SHORT);
             toast.show();
+        }else if(i == ActionClass.REPERTINEN){
+//            Toast toast = Toast.makeText(getApplicationContext(),col.getEnglishString(getApplicationContext(),colorNameID),Toast.LENGTH_SHORT);
+//            toast.show();
+            t1.speak(col.getEnglishString(getApplicationContext(),colorNameID),TextToSpeech.QUEUE_FLUSH,null);
         }
     }
 
@@ -175,7 +195,6 @@ public class AnalyzeColorActivity extends Activity {
         protected void onPostExecute(String data) {
             super.onPostExecute(data);
             // Display based on error existence
-            ColorHelper col = new ColorHelper(getApplication());
 
             colorText.setText("");
             if (e != null) {
@@ -186,11 +205,12 @@ public class AnalyzeColorActivity extends Activity {
                 AnalysisResult result = gson.fromJson(data, AnalysisResult.class);
 
                 colorText.append(result.color.accentColor + "\n");
-                colorText.append(col.matchingColorName(Color.parseColor("#" + result.color.accentColor)));
+                colorText.append(getResources().getString(col.matchingColorName(Color.parseColor("#" + result.color.accentColor))));
                 Context context = getApplicationContext();
                 int duration = Toast.LENGTH_SHORT;
 
-                textResult = col.matchingColorName(Color.parseColor("#" + result.color.accentColor));
+                colorNameID = col.matchingColorName(Color.parseColor("#" + result.color.accentColor));
+                textResult = getResources().getString(col.matchingColorName(Color.parseColor("#" + result.color.accentColor)));
                 Toast toast = Toast.makeText(context, textResult, duration);
                 toast.show();
                 colorText.append("\nDominant Color Foreground :" + result.color.dominantColorForeground + "\n");

@@ -59,6 +59,7 @@ public class MainActivity extends Activity {
     public static MagicalCamera magicalCamera;
     private int function = 0;
     private int scale = 50;
+    private boolean magicalAlbumRequest = false;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -236,6 +237,7 @@ public class MainActivity extends Activity {
     @OnClick(R.id.album)
     public void selectImageInAlbum(View view) {
         //Todo: Header
+        magicalAlbumRequest = true;
         magicalCamera.selectedPicture("Choose a Image");
     }
 
@@ -247,13 +249,14 @@ public class MainActivity extends Activity {
         //you should to call the method ever, for obtain the bitmap photo (= magicalCamera.getPhoto())
         magicalCamera.resultPhoto(requestCode, resultCode, data);
 
-        if (magicalCamera.getPhoto() != null) {
+        if (magicalCamera.getPhoto() != null && magicalAlbumRequest == true) {
             //another form to rotate image
             magicalCamera.setPhoto(magicalCamera.rotatePicture(magicalCamera.getPhoto(), MagicalCamera.ORIENTATION_ROTATE_NORMAL));
 
             //set the photo in image view
             imageView.setImageBitmap(magicalCamera.getPhoto());
             Bitmap bitmap = magicalCamera.getPhoto();
+            magicalAlbumRequest = false;
             ImageHelper.setImage(bitmap);
             switchIntent();
         }
