@@ -20,10 +20,9 @@
             app:ckCropOutput="true"
             app:ckFacing="back"
             app:ckFlash="auto"
-            app:ckFocus="continuous"
+            app:ckFocus="tapWithMarker"
             app:ckJpegQuality="100"
-            app:ckMethod="standard">
-
+            app:ckMethod="speed">
         </com.flurgle.camerakit.CameraView>
 
     </RelativeLayout>
@@ -33,13 +32,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/background"
-        android:text="TextView"
+        android:text=""
         android:textAlignment="center"
         android:textColor="@color/common_google_signin_btn_text_dark_default"
         android:textSize="30sp" />
 
     <ImageView
         android:id="@+id/preview"
+        android:contentDescription="@string/preview"
         android:layout_width="60dp"
         android:layout_height="100dp"
         android:layout_alignParentEnd="true" />

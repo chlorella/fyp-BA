@@ -14,25 +14,31 @@
 
             <ImageView
                 android:id="@+id/selectedImage"
+                android:contentDescription="@string/preview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#E0E0E0" />
+                android:background="#E0E0E0"
+                android:nestedScrollingEnabled="false" />
+
         </FrameLayout>
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_alignParentBottom="true"
-            android:layout_alignParentStart="true">
+            android:layout_alignParentStart="true"
+            android:saveEnabled="true">
 
-            <TextView
-                android:id="@+id/editTextResult"
+            <EditText
+                android:id="@+id/editText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
-                android:inputType="textMultiLine"
-                android:textSize="24sp" />
+                android:textSize="24sp"
+                tools:editable="false" />
+
         </FrameLayout>
+
     </LinearLayout>
 
 

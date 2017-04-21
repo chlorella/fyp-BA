@@ -18,6 +18,7 @@
         <activity
             android:name=".MainActivity"
             android:screenOrientation="portrait"
+            android:icon="@mipmap/ic_launcher"
             android:label="@string/app_name"
             android:configChanges="orientation|screenSize">
             <intent-filter>
@@ -28,6 +29,7 @@
         <activity
             android:name=".AnalysisActivity.DescribeActivity"
             android:label="@string/title_activity_describe"
+            android:screenOrientation="portrait"
             android:parentActivityName=".MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -36,6 +38,7 @@
         <activity
             android:name=".AnalysisActivity.RecognizeActivity"
             android:label="@string/title_activity_recognize"
+            android:screenOrientation="portrait"
             android:parentActivityName=".MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -44,6 +47,7 @@
         <activity
             android:name=".AnalysisActivity.AnalyzeColorActivity"
             android:label="@string/title_activity_analysis"
+            android:screenOrientation="portrait"
             android:parentActivityName=".MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

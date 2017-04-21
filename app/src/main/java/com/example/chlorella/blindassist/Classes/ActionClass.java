@@ -12,4 +12,6 @@ public class ActionClass {
     public static final int SAVEIMAGE = 3;
     public static final int FACERANGONIZATION = 5;
     public static final int TRANSLATION = 4;
+    public static final int COPYCCODE = 2;
+
 }

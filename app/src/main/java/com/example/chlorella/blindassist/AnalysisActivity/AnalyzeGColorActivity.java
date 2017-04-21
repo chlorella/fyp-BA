@@ -108,7 +108,7 @@
 //            imageView.setImageBitmap(rBitmap);
 //
 //            // Add detection log.
-//            Log.d("AnalyzeActivity", "Image: " + rBitmap.getWidth()
+//            Log.d("DescribeActivity", "Image: " + rBitmap.getWidth()
 //                    + "x" + rBitmap.getHeight());
 //
 //            editText.setText("processing");
@@ -234,7 +234,7 @@
 //
 //    private String convertResponseToString(BatchAnnotateImagesResponse response) {
 //        String message = "";
-//        ColorHelper col = new ColorHelper();
+//        ColorHelper colH = new ColorHelper();
 //        DominantColorsAnnotation colors = response.getResponses().get(0).getImagePropertiesAnnotation().getDominantColors();
 //        for (ColorInfo color : colors.getColors()) {
 ////            message +=String.format("fraction: %f\nr: %f, g: %f, b: %f\n",
@@ -249,7 +249,7 @@
 //            int b = Math.round(color.getColor().getBlue());
 //
 //            message += String.format("rgb:(%d,%d,%d)",r,g,b);
-//            message += col.matchingColorName(Color.rgb(r,g,b));
+//            message += colH.matchingColorName(Color.rgb(r,g,b));
 //            message += "\n";
 //        }
 //        return message;

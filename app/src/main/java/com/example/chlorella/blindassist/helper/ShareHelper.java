@@ -1,7 +1,10 @@
 package com.example.chlorella.blindassist.Helper;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+
+import com.example.chlorella.blindassist.R;
 
 /**
  * Created by chlorella on 18/4/2017.
@@ -9,25 +12,15 @@ import android.graphics.Bitmap;
 
 public class ShareHelper {
     //todo:test Share intent
-    public static Intent share(Bitmap bmap, String text) {
+    public static void share(Bitmap bmap, String text, Context current) {
         Intent share = new Intent(Intent.ACTION_SEND);
         share.setType("Text/plain");
-//        share.setType("image/jpeg");
-//        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-//        bmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-//        File f = new File(Environment.getExternalStorageDirectory()
-//                + File.separator + "temporary_file.jpg");
-//        try {
-//            f.createNewFile();
-//            FileOutputStream fo = new FileOutputStream(f);
-//            fo.write(bytes.toByteArray());
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
         share.putExtra(Intent.EXTRA_TEXT, text);
-//        share.putExtra(Intent.EXTRA_STREAM,
-//                Uri.parse("file:///sdcard/temporary_file.jpg"));
+        String title = current.getResources().getString(R.string.choose_share);
+        Intent chooser = Intent.createChooser(share, title);
 
-        return share;
+        if (share.resolveActivity(current.getPackageManager()) != null) {
+            current.startActivity(chooser);
+        }
     }
 }

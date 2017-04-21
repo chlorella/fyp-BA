@@ -18,8 +18,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-import com.example.chlorella.blindassist.AnalysisActivity.AnalyzeColorActivity;
 import com.example.chlorella.blindassist.AnalysisActivity.DescribeActivity;
+import com.example.chlorella.blindassist.AnalysisActivity.AnalyzeColorActivity;
 import com.example.chlorella.blindassist.AnalysisActivity.RecognizeActivity;
 import com.example.chlorella.blindassist.Classes.FunctionClass;
 import com.example.chlorella.blindassist.Helper.ImageHelper;
@@ -59,7 +59,6 @@ public class MainActivity extends Activity {
     public static MagicalCamera magicalCamera;
     private int function = 0;
     private int scale = 50;
-    private boolean magicalAlbumRequest = false;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,6 +76,10 @@ public class MainActivity extends Activity {
         magicalCamera = new MagicalCamera(this, scale, magicalPermissions);
 
         fText.setText(getResources().getStringArray(R.array.function_array)[function]);
+
+        if(ImageHelper.getImage() != null){
+            imageView.setImageBitmap(ImageHelper.getImage());
+        }
     }
 
     public void setScale(int i) {
@@ -194,7 +197,6 @@ public class MainActivity extends Activity {
                 // Create a bitmap
                 Bitmap bitmap = BitmapFactory.decodeByteArray(jpeg, 0, jpeg.length);
 
-                imageView.setImageBitmap(bitmap);
                 ImageHelper.setImage(bitmap);
                 switchIntent();
             }
@@ -204,6 +206,9 @@ public class MainActivity extends Activity {
 
     protected void onResume() {
         super.onResume();
+        if(ImageHelper.getImage() != null){
+            imageView.setImageBitmap(ImageHelper.getScaledImage());
+        }
         camera.start();
     }
 
@@ -214,9 +219,6 @@ public class MainActivity extends Activity {
     }
 
     public void switchIntent() {
-        if(magicalCamera.getPhoto()!= null){
-            ImageHelper.setImage(magicalCamera.getPhoto());
-        }
         if (ImageHelper.getImage() != null) {
             if (function == FunctionClass.DESCRIBE) {
                 Intent intent = new Intent(MainActivity.this, DescribeActivity.class);
@@ -237,8 +239,7 @@ public class MainActivity extends Activity {
     @OnClick(R.id.album)
     public void selectImageInAlbum(View view) {
         //Todo: Header
-        magicalAlbumRequest = true;
-        magicalCamera.selectedPicture("Choose a Image");
+        magicalCamera.selectedPicture(getResources().getString(R.string.choose_img));
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -249,15 +250,11 @@ public class MainActivity extends Activity {
         //you should to call the method ever, for obtain the bitmap photo (= magicalCamera.getPhoto())
         magicalCamera.resultPhoto(requestCode, resultCode, data);
 
-        if (magicalCamera.getPhoto() != null && magicalAlbumRequest == true) {
+        if (magicalCamera.getPhoto() != null) {
             //another form to rotate image
             magicalCamera.setPhoto(magicalCamera.rotatePicture(magicalCamera.getPhoto(), MagicalCamera.ORIENTATION_ROTATE_NORMAL));
 
-            //set the photo in image view
-            imageView.setImageBitmap(magicalCamera.getPhoto());
-            Bitmap bitmap = magicalCamera.getPhoto();
-            magicalAlbumRequest = false;
-            ImageHelper.setImage(bitmap);
+            ImageHelper.setImage(magicalCamera.getPhoto());
             switchIntent();
         }
     }

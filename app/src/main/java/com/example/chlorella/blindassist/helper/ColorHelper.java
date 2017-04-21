@@ -1630,6 +1630,11 @@ public class ColorHelper {
     }
 
     @NonNull
+    public String getChineseString(Context current,Integer colorID) {
+        return getLocalizedResources(current,Locale.TRADITIONAL_CHINESE).getString(colorID);
+    }
+
+    @NonNull
     Resources getLocalizedResources(Context context, Locale desiredLocale) {
         Configuration conf = context.getResources().getConfiguration();
         conf = new Configuration(conf);

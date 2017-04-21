@@ -57,18 +57,48 @@
     <string-array name="addition_array_c">
         <item>Repeat</item>
         <item>Repeat in English</item>
-        <item>Copy</item>
+        <item>Copy Color Code</item>
+        <item>Copy Color Name</item>
         <item>Share</item>
         <item>Save Image</item>
     </string-array>
 
-    <string-array name="addition_array_r">
+    <string-array name="addition_array_r_1">
+        <item>Save Image</item>
+    </string-array>
+
+    <string-array name="addition_array_r_2">
+        <item>Share text</item>
         <item>Repeat</item>
         <item>Copy</item>
-        <item>Share</item>
-        <item>Save Image</item>
     </string-array>
 
+    <string name="face">face </string>
+    <string name="f_age">,age:</string>
+    <string name="f_gender">, gender:</string>
+
+    <string name="s_f">Female</string>
+    <string name="s_m">Male</string>
+
+    <string name="choose_img">Choose a Image</string>
+    <string name="choose_share">Share via</string>
+
+    <string name="analyzing">Analyzing.</string>
+    <string name="wait">Please wait for the result.</string>
+    <string name="copied">Copied to clipboard.</string>
+    <string name="saved">Saved to rHelper files.</string>
+    <string name="no_g_tran">Sorry, No Google Translation Installed</string>
+
+    <string name="preview">preview</string>
+
+    <plurals name="number_of_face">
+        <item quantity="one">%d face found.</item>
+        <item quantity="other">%d faces found.</item>
+    </plurals>
+    <string name="no_face">相片沒有臉孔</string>
+
+    <string name="t_color">Color Name:</string>
+    <string name="t_ccode">Color Code:</string>
 
     <string name="black">Black</string>
     <string name="navy_blue">Navy Blue</string>

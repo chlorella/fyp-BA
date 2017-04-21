@@ -1,35 +1,3 @@
-//
-// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license.
-//
-// Microsoft Cognitive Services (formerly Project Oxford): https://www.microsoft.com/cognitive-services
-//
-// Microsoft Cognitive Services (formerly Project Oxford) GitHub:
-// https://github.com/Microsoft/Cognitive-Vision-Android
-//
-// Copyright (c) Microsoft Corporation
-// All rights reserved.
-//
-// MIT License:
-// Permission is hereby granted, free of charge, to any person obtaining
-// a copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to
-// permit persons to whom the Software is furnished to do so, subject to
-// the following conditions:
-//
-// The above copyright notice and this permission notice shall be
-// included in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED ""AS IS"", WITHOUT WARRANTY OF ANY KIND,
-// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-// LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-// OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-//
 package com.example.chlorella.blindassist.AnalysisActivity;
 
 import android.app.Activity;
@@ -41,6 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -53,12 +22,12 @@ import com.example.chlorella.blindassist.Helper.ShareHelper;
 import com.example.chlorella.blindassist.Helper.TranslateHelper;
 import com.example.chlorella.blindassist.R;
 import com.frosquivel.magicalcamera.MagicalCamera;
-import com.google.android.gms.vision.face.Landmark;
 import com.google.gson.Gson;
 import com.microsoft.projectoxford.vision.VisionServiceClient;
 import com.microsoft.projectoxford.vision.VisionServiceRestClient;
 import com.microsoft.projectoxford.vision.contract.AnalysisResult;
 import com.microsoft.projectoxford.vision.contract.Caption;
+import com.microsoft.projectoxford.vision.contract.Face;
 import com.microsoft.projectoxford.vision.rest.VisionServiceException;
 
 import java.io.ByteArrayInputStream;
@@ -72,25 +41,31 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static com.example.chlorella.blindassist.MainActivity.magicalCamera;
+import static com.example.chlorella.blindassist.R.string.analyzing;
+import static com.example.chlorella.blindassist.R.string.no_g_tran;
+import static com.example.chlorella.blindassist.R.string.saved;
+
 
 public class DescribeActivity extends Activity {
     @BindView(R.id.selectedImage)
     ImageView selectedImage;
     @BindView(R.id.textView)
-    TextView textView;
+    TextView textview;
 
     // The image selected to detect.
     private Bitmap rBitmap;
     private Bitmap sBitmap;
 
     private VisionServiceClient client;
+    private CharSequence textResult = null;
 
-    private CharSequence textResult;
+    TextToSpeech t1;
+
+    List<Face> faces;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        textResult = null;
         setContentView(R.layout.activity_describe);
         ButterKnife.bind(this);
 
@@ -108,41 +83,51 @@ public class DescribeActivity extends Activity {
             selectedImage.setImageBitmap(rBitmap);
 
             // Add detection log.
-            Log.d("DescribeActivity", "get Bitmap");
+            Log.d("DescribeActivity", "Image: " + rBitmap.getWidth()
+                    + "x" + rBitmap.getHeight());
 
-            doDescribe();
+            doAnalyze();
         }
+
+        t1 = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if (status != TextToSpeech.ERROR) {
+                    t1.setLanguage(Locale.ENGLISH);
+                }
+            }
+        });
     }
 
-    public void doDescribe() {
-        //todo: toast
-        textView.setText("Describing...");
+    public void doAnalyze() {
+        Toast.makeText(DescribeActivity.this, analyzing, Toast.LENGTH_SHORT).show();
 
         try {
             new doRequest().execute();
         } catch (Exception e) {
-            //todo: toast
-            textView.setText("Error encountered. Exception is: " + e.toString());
+            textview.setText("Error encountered. Exception is: " + e.toString());
         }
     }
 
-    //process
-    //different
     private String process() throws VisionServiceException, IOException {
         Gson gson = new Gson();
+        String[] features = {"Description", "Faces"};
+        String[] details = {};
 
         // Put the image into an input stream for detection.
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         sBitmap.compress(Bitmap.CompressFormat.JPEG, ImageHelper.getScale(), output);
         ByteArrayInputStream inputStream = new ByteArrayInputStream(output.toByteArray());
 
-        AnalysisResult v = this.client.describe(inputStream, 1);
+        AnalysisResult v = this.client.analyzeImage(inputStream, features, details);
+
 
         String result = gson.toJson(v);
         Log.d("result", result);
 
         return result;
     }
+
 
     @OnClick(R.id.selectedImage)
     public void onViewClicked() {
@@ -157,102 +142,89 @@ public class DescribeActivity extends Activity {
         builder.create().show();
     }
 
-    private void action(int i){
-        if(i == ActionClass.REPEAT){
-            if(textResult != null){
-                Toast toast = Toast.makeText(getApplicationContext(), textResult, Toast.LENGTH_SHORT);
-                toast.show();
-            }else{
-                //Todo: String rHK
-                Toast toast = Toast.makeText(getApplicationContext(), "please wait for the result", Toast.LENGTH_SHORT);
-                toast.show();
-            }
-        }else if(i == ActionClass.COPYTOCLIPBOARD){
-            if(textResult != null){
-                ClipboardHelper.setClipboard(getApplicationContext(),textResult.toString());
-                //Todo: String rHK
-                Toast toast = Toast.makeText(getApplicationContext(), "Copied to clipboard", Toast.LENGTH_SHORT);
-                toast.show();
-            }else{
-                //Todo: String rHK
-                Toast toast = Toast.makeText(getApplicationContext(), "please wait for the result", Toast.LENGTH_SHORT);
+    private void action(int i) {
+        if (i == ActionClass.REPEAT) {
+            if (textResult != null) {
+                if (!Locale.getDefault().toString().contentEquals("en")) {
+                    t1.speak(textResult.toString(), TextToSpeech.QUEUE_FLUSH, null);
+                } else {
+                    Toast.makeText(getApplicationContext(), textResult, Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                Toast toast = Toast.makeText(getApplicationContext(), R.string.wait, Toast.LENGTH_SHORT);
                 toast.show();
             }
-        }else if(i == ActionClass.SHAREMESSAGE){
-            if(textResult != null) {
-                Intent share = ShareHelper.share(rBitmap, textResult.toString());
-                startActivity(share);
-            }else{
-                //Todo: String rHK
-                Toast toast = Toast.makeText(getApplicationContext(), "please wait for the result", Toast.LENGTH_SHORT);
+        } else if (i == ActionClass.COPYTOCLIPBOARD) {
+            if (textResult != null) {
+                ClipboardHelper.setClipboard(getApplicationContext(), textResult.toString());
+                Toast toast = Toast.makeText(getApplicationContext(), R.string.copied, Toast.LENGTH_SHORT);
+                toast.show();
+            } else {
+                Toast toast = Toast.makeText(getApplicationContext(), R.string.wait, Toast.LENGTH_SHORT);
                 toast.show();
             }
-        }else if(i == ActionClass.SAVEIMAGE){
-            //Todo: Dialog change name
-            Toast toast = Toast.makeText(getApplicationContext(), magicalCamera.savePhotoInMemoryDevice(rBitmap,"test","rHelper",MagicalCamera.JPEG,true),Toast.LENGTH_SHORT);
+        } else if (i == ActionClass.SHAREMESSAGE) {
+            if (textResult != null) {
+                ShareHelper.share(rBitmap, textResult.toString(), DescribeActivity.this);
+
+            } else {
+
+                Toast toast = Toast.makeText(getApplicationContext(), R.string.wait, Toast.LENGTH_SHORT);
+                toast.show();
+            }
+        } else if (i == ActionClass.SAVEIMAGE) {
+            magicalCamera.savePhotoInMemoryDevice(rBitmap, "photo", "rHelper", MagicalCamera.JPEG, true);
+            Toast toast = Toast.makeText(getApplicationContext(), saved, Toast.LENGTH_SHORT);
             toast.show();
-        }else if(i == ActionClass.FACERANGONIZATION){
-            //Todo: Dialog change name
+        } else if (i == ActionClass.FACERANGONIZATION) {
             FaceDetector();
-        }else if(i == ActionClass.TRANSLATION){
-            //Todo: Dialog change name
-            if( Locale.getDefault().toString() != "en" && textResult != null) {
+        } else if (i == ActionClass.TRANSLATION) {
+            if (Locale.getDefault().toString().contentEquals("en") && textResult != null) {
                 try {
                     Intent intent = TranslateHelper.callGoogleTranslateApps(textResult.toString(), Locale.getDefault().toString());
                     startActivity(intent);
-                }catch (ActivityNotFoundException e) {
-                    // TODO Auto-generated catch block
-                    Toast.makeText(getApplication(), "Sorry, No Google Translation Installed",
+                } catch (ActivityNotFoundException e) {
+                    Toast.makeText(getApplication(), no_g_tran,
                             Toast.LENGTH_SHORT).show();
                 }
-            }else if(textResult != null){
-                Toast toast = Toast.makeText(getApplicationContext(), "Translation is for English to Chinese", Toast.LENGTH_SHORT);
-                toast.show();
-            }else if(textResult == null){
-                Toast toast = Toast.makeText(getApplicationContext(), "please wait for the result", Toast.LENGTH_SHORT);
+            } else if (textResult == null) {
+                Toast toast = Toast.makeText(getApplicationContext(), R.string.wait, Toast.LENGTH_SHORT);
                 toast.show();
             }
         }
     }
 
     private void FaceDetector() {
-        if (magicalCamera != null) {
-            magicalCamera.setPhoto(rBitmap);
-            if (magicalCamera.getPhoto() != null) {
-                //this comment line is the strok 5 and color red for default
-                //imageView.setImageBitmap(magicalCamera.faceDetector());
-                //you can the posibility of send the square color and the respective stroke
-                selectedImage.setImageBitmap(magicalCamera.faceDetector(10, Color.BLUE));
-                //todo: landmark
-                List<Landmark> listMark = magicalCamera.getFaceRecognitionInformation().listLandMarkPhoto;
+        int faceCount = 0;
 
-                int count = 0;
-                if(listMark != null) {
-                    for (Landmark landmark : listMark) {
-                        count++;
-                    }
-                }
-                if(count != 0){
-                    CharSequence text = "There are " + count + " face";
-                    Toast toast = Toast.makeText(getApplicationContext(),text,Toast.LENGTH_SHORT);
-                    toast.show();
-                }else{
-                    Toast toast = Toast.makeText(getApplicationContext(),"There are no human face",Toast.LENGTH_SHORT);
-                    toast.show();
-                }
-            } else {
-                //Todo: String
-                Toast.makeText(DescribeActivity.this,
-                        "Your image is null, please select or take one",
-                        Toast.LENGTH_SHORT).show();
+        for (Face face : faces) {
+            faceCount++;
+        }
+        magicalCamera.setPhoto(rBitmap);
+        selectedImage.setImageBitmap(magicalCamera.faceDetector(5, Color.BLUE));
+        if (faceCount != 0) {
+            CharSequence text = getResources().getQuantityString(R.plurals.number_of_face, faces.size(),faces.size());
+
+            Toast toast = Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT);
+            toast.show();
+            int fc2 = 0;
+            for (Face face : faces) {
+                Toast.makeText(getApplicationContext(), getResources().getString(R.string.face) + ++fc2 + getResources().getString(R.string.f_gender) + genderCS((CharSequence) face.gender.toString()) + getResources().getString(R.string.f_age) + face.age, Toast.LENGTH_SHORT).show();
             }
         } else {
-            //Todo: String
-            Toast.makeText(DescribeActivity.this,
-                    "Please initialized magical camera, maybe in static context for use in all activity",
-                    Toast.LENGTH_SHORT).show();
+            Toast toast = Toast.makeText(getApplicationContext(), R.string.no_face, Toast.LENGTH_SHORT);
+            toast.show();
         }
     }
+
+    private CharSequence genderCS(CharSequence cs) {
+        if (cs == "Male") {
+            return getResources().getString(R.string.s_m);
+        } else {
+            return getResources().getString(R.string.s_f);
+        }
+    }
+
 
     private class doRequest extends AsyncTask<String, String, String> {
         // Store error message
@@ -277,40 +249,27 @@ public class DescribeActivity extends Activity {
             super.onPostExecute(data);
             // Display based on error existence
 
-            textView.setText("");
+            textview.setText("");
             if (e != null) {
-                textView.setText("Error: " + e.getMessage());
+                textview.setText("Error: " + e.getMessage());
                 this.e = null;
             } else {
-                //gson
                 Gson gson = new Gson();
                 AnalysisResult result = gson.fromJson(data, AnalysisResult.class);
+                faces = result.faces;
 
-                textView.append("Image format: " + result.metadata.format + "\n");
-                textView.append("Image width: " + result.metadata.width + ", height:" + result.metadata.height + "\n");
-                textView.append("\n");
-                textResult = "";
-
-                //result.description.captions = .description text
-                for (Caption caption : result.description.captions) {
-                    textView.append("Caption: " + caption.text + ", confidence: " + caption.confidence + "\n");
-                    textResult = textResult + caption.text + "\n";
+                for (Caption c : result.description.captions) {
+                    textResult = c.text;
+                    textview.append(c.text);
                 }
-                textView.append("\n");
-
-                //Context
-                Toast toast = Toast.makeText(getApplicationContext(), textResult, Toast.LENGTH_SHORT);
-                toast.show();
-
-                for (String tag : result.description.tags) {
-                    textView.append("Tag: " + tag + "\n");
+                if (!Locale.getDefault().toString().contentEquals("en")){
+                    t1.speak(textResult.toString(), TextToSpeech.QUEUE_FLUSH, null);
+                }else{
+                    Toast.makeText(getApplicationContext(), textResult, Toast.LENGTH_SHORT).show();
                 }
-                textView.append("\n");
-
-//                textView.append("\n--- Raw Data ---\n\n");
-//                textView.append(data);
-//                textView.setSelection(0);
             }
         }
     }
+
+
 }

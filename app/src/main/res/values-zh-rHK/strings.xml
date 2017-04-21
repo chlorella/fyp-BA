@@ -33,6 +33,74 @@
         <item>繁體中文</item>
     </string-array>
 
+    <string name="menu_facing">鏡頭</string>
+    <string-array name="facing_array">
+        <item>前鏡頭</item>
+        <item>後鏡頭</item>
+    </string-array>
+
+    <string-array name="addition_array_d">
+        <item>重複</item>
+        <item>複制</item>
+        <item>分享</item>
+        <item>儲存相片</item>
+        <item>翻譯</item>
+        <item>人臉辨析</item>
+    </string-array>
+
+    <string-array name="addition_array_c">
+        <item>重複</item>
+        <item>以英語重複</item>
+        <item>複制色碼</item>
+        <item>複制顏色</item>
+        <item>分享</item>
+        <item>儲存相片</item>
+    </string-array>
+
+    <string-array name="addition_array_r">
+        <item>重複</item>
+        <item>複制</item>
+        <item>分享</item>
+        <item>儲存相片</item>
+    </string-array>
+
+    <string name="choose_img">選擇相片</string>
+    <string name="choose_share">分享</string>
+
+    <string name="analyzing">分析中……</string>
+    <string name="wait">請等待結果</string>
+    <string name="copied">複制</string>
+    <string name="saved">相片已存至rHelper文件夾</string>
+    <string name="no_g_tran">無谷歌翻譯應用程式</string>
+
+    <string-array name="addition_array_r_1">
+        <item>儲存相片</item>
+    </string-array>
+
+    <string-array name="addition_array_r_2">
+        <item>分享</item>
+        <item>單句重複</item>
+        <item>複制</item>
+    </string-array>
+
+    <string name="t_color">顏色：</string>
+    <string name="t_ccode">色碼：</string>
+
+    <plurals name="number_of_face">
+        <item quantity="one">相片有%d 個臉孔</item>
+        <item quantity="other">相片有%d 個臉孔</item>
+    </plurals>
+    <string name="no_face">相片沒有臉孔</string>
+
+    <string name="face">臉孔</string>
+    <string name="f_age">, 年齡:</string>
+    <string name="f_gender">, 性別:</string>
+
+    <string name="s_f">女</string>
+    <string name="s_m">男</string>
+
+    <string name="preview">預覽</string>
+
     <string name="black">黑色</string>
     <string name="navy_blue">海軍藍</string>
     <string name="dark_blue">深藍</string>

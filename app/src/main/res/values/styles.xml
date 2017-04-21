@@ -2,6 +2,7 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="android:style/Theme.Material.Light.DarkActionBar">
+        <item name="android:windowFullscreen">true</item>
     </style>
     <style name="AppThemeNoBar" parent="android:style/Theme.Material.Light.NoActionBar">
     </style>

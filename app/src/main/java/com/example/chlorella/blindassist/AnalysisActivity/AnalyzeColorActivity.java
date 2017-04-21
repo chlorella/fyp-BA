@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.AsyncTask;
@@ -20,7 +19,6 @@ import com.example.chlorella.blindassist.Helper.ClipboardHelper;
 import com.example.chlorella.blindassist.Helper.ColorHelper;
 import com.example.chlorella.blindassist.Helper.ImageHelper;
 import com.example.chlorella.blindassist.Helper.ShareHelper;
-import com.example.chlorella.blindassist.MainActivity;
 import com.example.chlorella.blindassist.R;
 import com.frosquivel.magicalcamera.MagicalCamera;
 import com.google.gson.Gson;
@@ -38,6 +36,12 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.example.chlorella.blindassist.MainActivity.magicalCamera;
+import static com.example.chlorella.blindassist.R.string.analyzing;
+import static com.example.chlorella.blindassist.R.string.copied;
+import static com.example.chlorella.blindassist.R.string.saved;
+import static com.example.chlorella.blindassist.R.string.wait;
+
 public class AnalyzeColorActivity extends Activity {
     @BindView(R.id.selectedImage)
     ImageView selectedImage;
@@ -52,7 +56,8 @@ public class AnalyzeColorActivity extends Activity {
     private CharSequence textResult = null;
 
 
-    ColorHelper col = new ColorHelper(getApplication());
+    ColorHelper colH = new ColorHelper(getApplication());
+    String colcode;
     private Integer colorNameID = null;
     private TextToSpeech t1;
 
@@ -76,17 +81,16 @@ public class AnalyzeColorActivity extends Activity {
             selectedImage.setImageBitmap(rBitmap);
 
             // Add detection log.
-            Log.d("AnalyzeActivity", "Image: " + rBitmap.getWidth()
+            Log.d("DescribeActivity", "Image: " + rBitmap.getWidth()
                     + "x" + rBitmap.getHeight());
 
-            colorText.setText("processing");
             doAnalyze();
         }
 
-        t1=new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+        t1 = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int status) {
-                if(status != TextToSpeech.ERROR) {
+                if (status != TextToSpeech.ERROR) {
                     t1.setLanguage(Locale.ENGLISH);
                 }
             }
@@ -94,7 +98,7 @@ public class AnalyzeColorActivity extends Activity {
     }
 
     public void doAnalyze() {
-        colorText.setText("Analyzing...");
+        Toast.makeText(this,analyzing,Toast.LENGTH_SHORT).show();
 
         try {
             new doRequest().execute();
@@ -128,48 +132,49 @@ public class AnalyzeColorActivity extends Activity {
             public void onClick(DialogInterface dialog, int which) {
                 // The 'which' argument contains the index position
                 // of the selected item
-                action(which);
+                iAction(which);
             }
         });
         builder.create().show();
     }
 
-    private void action(int i){
-        if(i == ActionClass.REPEAT){
-            if(textResult != null){
+    private void iAction(int i) {
+        if (i == ActionClass.REPEAT) {
+            if (textResult != null) {
                 Toast toast = Toast.makeText(getApplicationContext(), textResult, Toast.LENGTH_SHORT);
                 toast.show();
-            }else{
-                //Todo: String rHK
-                Toast toast = Toast.makeText(getApplicationContext(), "please wait for the result", Toast.LENGTH_SHORT);
+            } else {
+                Toast toast = Toast.makeText(getApplicationContext(), R.string.wait, Toast.LENGTH_SHORT);
                 toast.show();
             }
-        }else if(i == ActionClass.COPYTOCLIPBOARD+1){
-            if(textResult != null){
-                ClipboardHelper.setClipboard(getApplicationContext(),textResult.toString());
-                Toast toast = Toast.makeText(getApplicationContext(), "Copied to clipboard", Toast.LENGTH_SHORT);
+        } else if (i == ActionClass.COPYTOCLIPBOARD + 2) {
+            if (textResult != null) {
+                ClipboardHelper.setClipboard(getApplicationContext(), colH.getEnglishString(getApplicationContext(), colorNameID) + " " + colH.getChineseString(getApplicationContext(), colorNameID));
+                Toast toast = Toast.makeText(getApplicationContext(), copied, Toast.LENGTH_SHORT);
                 toast.show();
-            }else{
-                //Todo: String rHK
-                Toast toast = Toast.makeText(getApplicationContext(), "please wait for the result", Toast.LENGTH_SHORT);
-                toast.show();
-            }
-        }else if(i == ActionClass.SHAREMESSAGE+1){
-            if(textResult != null) {
-                Intent shareIntent = ShareHelper.share( rBitmap, textResult.toString());
-                startActivity(shareIntent);
-            }else{
-                //Todo: String rHK
-                Toast toast = Toast.makeText(getApplicationContext(), "please wait for the result", Toast.LENGTH_SHORT);
+            } else {
+                Toast toast = Toast.makeText(getApplicationContext(), R.string.wait, Toast.LENGTH_SHORT);
                 toast.show();
             }
-        }else if(i == ActionClass.SAVEIMAGE+1){
-            Toast toast = Toast.makeText(getApplicationContext(),MainActivity.magicalCamera.savePhotoInMemoryDevice(rBitmap,"rHelper",MagicalCamera.JPEG,true),Toast.LENGTH_SHORT);
+        } else if (i == ActionClass.SHAREMESSAGE + 2) {
+            if (textResult != null) {
+                ShareHelper.share(rBitmap, textResult.toString(), AnalyzeColorActivity.this);
+            } else {
+                Toast toast = Toast.makeText(getApplicationContext(), wait, Toast.LENGTH_SHORT);
+                toast.show();
+            }
+        } else if (i == ActionClass.SAVEIMAGE + 2) {
+            magicalCamera.savePhotoInMemoryDevice(rBitmap,"photo", "rHelper", MagicalCamera.JPEG, true);
+            Toast toast = Toast.makeText(getApplicationContext(), saved, Toast.LENGTH_SHORT);
             toast.show();
-        }else if(i == ActionClass.REPERTINEN){
-//            Toast toast = Toast.makeText(getApplicationContext(),col.getEnglishString(getApplicationContext(),colorNameID),Toast.LENGTH_SHORT);
+        } else if (i == ActionClass.REPERTINEN) {
+//            Toast toast = Toast.makeText(getApplicationContext(),colH.getEnglishString(getApplicationContext(),colorNameID),Toast.LENGTH_SHORT);
 //            toast.show();
-            t1.speak(col.getEnglishString(getApplicationContext(),colorNameID),TextToSpeech.QUEUE_FLUSH,null);
+            t1.speak(colH.getEnglishString(getApplicationContext(), colorNameID), TextToSpeech.QUEUE_FLUSH, null);
+        }else if (i == ActionClass.COPYCCODE) {
+            ClipboardHelper.setClipboard(getApplicationContext(), colcode);
+            Toast toast = Toast.makeText(getApplicationContext(), copied, Toast.LENGTH_SHORT);
+            toast.show();
         }
     }
 
@@ -205,22 +210,15 @@ public class AnalyzeColorActivity extends Activity {
                 AnalysisResult result = gson.fromJson(data, AnalysisResult.class);
 
                 colorText.append(result.color.accentColor + "\n");
-                colorText.append(getResources().getString(col.matchingColorName(Color.parseColor("#" + result.color.accentColor))));
+                colcode = "#" + result.color.accentColor;
+                colorText.append(getResources().getString(colH.matchingColorName(Color.parseColor("#" + result.color.accentColor))));
                 Context context = getApplicationContext();
                 int duration = Toast.LENGTH_SHORT;
-
-                colorNameID = col.matchingColorName(Color.parseColor("#" + result.color.accentColor));
-                textResult = getResources().getString(col.matchingColorName(Color.parseColor("#" + result.color.accentColor)));
+                colorNameID = colH.matchingColorName(Color.parseColor("#" + result.color.accentColor));
+                textResult = getResources().getString(R.string.t_ccode) + colcode + "\n" + getResources().getString(R.string.t_color) + getResources().getString(colH.matchingColorName(Color.parseColor("#" + result.color.accentColor)));
                 Toast toast = Toast.makeText(context, textResult, duration);
                 toast.show();
-                colorText.append("\nDominant Color Foreground :" + result.color.dominantColorForeground + "\n");
-                colorText.append("Dominant Color Background :" + result.color.dominantColorBackground + "\n");
-
-//                mcolorText.append("\n--- Raw Data ---\n\n");
-//                mcolorText.append(data);
-//                mcolorText.setSelection(0);
             }
         }
     }
-
 }

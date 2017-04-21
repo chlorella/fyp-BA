@@ -32,9 +32,16 @@
 //
 package com.example.chlorella.blindassist.Helper;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
+import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.view.LayoutInflater;
+
+import com.example.chlorella.blindassist.R;
 
 import java.lang.ref.WeakReference;
 
